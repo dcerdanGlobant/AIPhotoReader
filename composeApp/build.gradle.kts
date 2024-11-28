@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -33,6 +34,16 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            // Koin
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
+
+            // / Coroutines
+            implementation(libs.kotlinx.coroutines.android)
+
+            // Ktor
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -43,6 +54,44 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            // Koin
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
+
+            // Coroutines
+            implementation(libs.kotlinx.coroutines.core)
+
+            // ViewModel
+            implementation(libs.lifecycle.viewmodel.compose)
+
+            // Navigation
+            implementation(libs.navigation.compose)
+
+            // Kermit Logger
+            implementation(libs.kermit)
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.encoding)
+
+            // COIL
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
+            implementation(libs.coil.compose)
+        }
+
+        iosMain.dependencies {
+            // Ktor
+            implementation(libs.ktor.client.darwin)
+
+            // / Coroutines
+            implementation(libs.kotlinx.coroutines.swing)
         }
     }
 }
