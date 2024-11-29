@@ -1,4 +1,5 @@
 package com.kmpai.photoreader.di
 
-class platformModule {
-}
+import org.koin.core.module.Module
+
+expect val platformModule : Module

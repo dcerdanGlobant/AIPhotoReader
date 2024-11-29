@@ -1,4 +1,6 @@
-package com.kmpai.photoreader.feature.picker.di
+package com.kmpai.photoreader.feature.picker.domain.model
 
-class Picture {
-}
+data class Picture (
+    val path: String = "",
+    val contentDescription: String? = null
+)

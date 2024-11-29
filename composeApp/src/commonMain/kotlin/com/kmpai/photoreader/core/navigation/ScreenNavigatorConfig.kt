@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.navigation
+package com.kmpai.photoreader.core.navigation
 
 import org.jetbrains.compose.resources.StringResource
 

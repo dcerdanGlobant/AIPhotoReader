@@ -1,4 +1,14 @@
 package com.kmpai.photoreader.feature.picker.ui.screens.home
 
-class PickerHomeView {
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+
+@Composable
+fun PickerHomeView(homeState: PickerHomeState) {
+    if(homeState.isLoading) {
+        CircularProgressIndicator()
+    } else {
+        Text("TODO UI")
+    }
 }

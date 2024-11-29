@@ -91,7 +91,7 @@ kotlin {
             implementation(libs.ktor.client.darwin)
 
             // / Coroutines
-            implementation(libs.kotlinx.coroutines.swing)
+            //implementation(libs.kotlinx.coroutines.swing)
         }
     }
 }

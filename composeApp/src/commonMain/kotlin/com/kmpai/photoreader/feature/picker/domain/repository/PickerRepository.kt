@@ -1,4 +1,7 @@
 package com.kmpai.photoreader.feature.picker.domain.repository
 
-class PickerRepository {
+import com.kmpai.photoreader.feature.picker.domain.model.Picture
+
+interface PickerRepository {
+    fun getPictureDescription(): Result<Picture>
 }
