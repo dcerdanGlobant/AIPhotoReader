@@ -12,3 +12,12 @@ This is a Kotlin Multiplatform project targeting Android, iOS.
 
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+
+### API Key
+In order to use the api, you need to add the Globant AI API key:
+Add the file: `composeApp/src/commonMain/composeResources/values/secrets.xml`, and inside 
+```
+<resources>
+    <string name="globant_api_key">add your key</string>
+</resources>
+```

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PickerHomeViewModel (
+class PickerHomeViewModel(
     private val getPictureDescription: GetPictureDescription
 ) : ViewModel() {
     private val _homeState: MutableStateFlow<PickerHomeState> = MutableStateFlow(PickerHomeState())
@@ -22,13 +22,12 @@ class PickerHomeViewModel (
 
     private fun getPictureData() {
         viewModelScope.launch {
-            delay(2000)
-            getPictureDescription.invoke()
+            getPictureDescription.invoke("little_cat.jpeg") //TODO: remove sample file name
                 .onSuccess {
                     _homeState.emit(
                         PickerHomeState(
                             isLoading = false,
-                            Picture("","")
+                            Picture("", it.contentDescription)
                         )
                     )
                 }
@@ -36,7 +35,7 @@ class PickerHomeViewModel (
                     _homeState.emit(
                         PickerHomeState(
                             isLoading = false,
-                            Picture("","")
+                            Picture("", it.message)
                         )
                     )
                 }
