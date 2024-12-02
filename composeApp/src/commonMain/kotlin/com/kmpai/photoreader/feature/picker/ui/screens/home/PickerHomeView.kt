@@ -6,9 +6,11 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun PickerHomeView(homeState: PickerHomeState) {
-    if(homeState.isLoading) {
+    if (homeState.isLoading) {
         CircularProgressIndicator()
     } else {
-        Text("TODO UI")
+        if (homeState.picture == null) {
+            Text("Permission Denied")
+        } else Text("TODO UI")
     }
 }

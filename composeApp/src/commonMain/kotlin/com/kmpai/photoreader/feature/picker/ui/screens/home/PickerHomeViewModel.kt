@@ -16,11 +16,7 @@ class PickerHomeViewModel (
     private val _homeState: MutableStateFlow<PickerHomeState> = MutableStateFlow(PickerHomeState())
     val homeState: StateFlow<PickerHomeState> get() = _homeState.asStateFlow()
 
-    init {
-        getPictureData()
-    }
-
-    private fun getPictureData() {
+    fun getPictureData() {
         viewModelScope.launch {
             delay(2000)
             getPictureDescription.invoke()
@@ -40,6 +36,17 @@ class PickerHomeViewModel (
                         )
                     )
                 }
+        }
+    }
+
+    fun cameraPermissionDenied(){
+        viewModelScope.launch {
+            _homeState.emit(
+                PickerHomeState(
+                    isLoading = false,
+                    picture = null
+                )
+            )
         }
     }
 
