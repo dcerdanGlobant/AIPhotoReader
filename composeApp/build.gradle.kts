@@ -55,6 +55,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            //Permissions
+            implementation(libs.moko.permissions)
             // Koin
             api(libs.koin.core)
             implementation(libs.koin.compose)
