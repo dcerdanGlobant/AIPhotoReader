@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.feature.gallery.ui
+package com.kmpai.photoreader.feature.picker.ui
 
 import android.content.ContentResolver
 import android.graphics.BitmapFactory
@@ -20,7 +20,14 @@ actual fun rememberGalleryManager(onResult: (SharedImage?) -> Unit): GalleryMana
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
-                onResult.invoke(SharedImage(BitmapUtils.getBitmapFromUri(uri, contentResolver)))
+                onResult.invoke(
+                    com.kmpai.photoreader.feature.picker.ui.SharedImage(
+                        BitmapUtils.getBitmapFromUri(
+                            uri,
+                            contentResolver
+                        )
+                    )
+                )
             }
         }
     return remember {

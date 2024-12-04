@@ -9,8 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.kmpai.photoreader.feature.gallery.ui.addGalleryNavGraph
-import com.kmpai.photoreader.feature.gallery.ui.galleryNavConfig
 import com.kmpai.photoreader.feature.picker.ui.addPickerNavGraph
 import com.kmpai.photoreader.feature.picker.ui.pickerNavConfig
 
@@ -21,11 +19,10 @@ fun ScreenNavigator() {
         Surface(modifier = Modifier.padding(paddingValues)) {
             NavHost(
                 navController = navController,
-                startDestination = galleryNavConfig.route,
+                startDestination = pickerNavConfig.route,
                 modifier = Modifier.fillMaxSize(),
             ) {
                 addPickerNavGraph(navController)
-                addGalleryNavGraph(navController)
             }
         }
     }

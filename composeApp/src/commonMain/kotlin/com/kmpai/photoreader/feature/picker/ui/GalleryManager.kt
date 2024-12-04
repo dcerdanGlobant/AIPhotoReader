@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.feature.gallery.ui
+package com.kmpai.photoreader.feature.picker.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ImageBitmap

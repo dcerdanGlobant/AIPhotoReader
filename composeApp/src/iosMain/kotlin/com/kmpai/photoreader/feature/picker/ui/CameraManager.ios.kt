@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.feature.gallery.ui
+package com.kmpai.photoreader.feature.picker.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -27,7 +27,7 @@ actual fun rememberCameraManager(onResult: (SharedImage?) -> Unit): CameraManage
                         ?: didFinishPickingMediaWithInfo.getValue(
                             UIImagePickerControllerOriginalImage
                         ) as? UIImage
-                onResult.invoke(SharedImage(image))
+                onResult.invoke(com.kmpai.photoreader.feature.picker.ui.SharedImage(image))
                 picker.dismissViewControllerAnimated(true, null)
             }
         }

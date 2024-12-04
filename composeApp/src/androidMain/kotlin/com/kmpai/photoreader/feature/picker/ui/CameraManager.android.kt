@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.feature.gallery.ui
+package com.kmpai.photoreader.feature.picker.ui
 
 import android.content.ContentResolver
 import android.net.Uri
@@ -21,7 +21,14 @@ actual fun rememberCameraManager(onResult: (SharedImage?) -> Unit): CameraManage
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             if (success) {
-                onResult.invoke(SharedImage(BitmapUtils.getBitmapFromUri(tempPhotoUri, contentResolver)))
+                onResult.invoke(
+                    com.kmpai.photoreader.feature.picker.ui.SharedImage(
+                        BitmapUtils.getBitmapFromUri(
+                            tempPhotoUri,
+                            contentResolver
+                        )
+                    )
+                )
             }
         }
     )

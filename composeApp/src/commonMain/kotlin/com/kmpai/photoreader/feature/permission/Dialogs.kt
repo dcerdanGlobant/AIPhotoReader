@@ -2,6 +2,7 @@ package com.kmpai.photoreader.feature.permission
 
 import aiphotoreader.composeapp.generated.resources.Res
 import aiphotoreader.composeapp.generated.resources.compose_multiplatform
+import aiphotoreader.composeapp.generated.resources.ic_camera
 import aiphotoreader.composeapp.generated.resources.ic_images
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,10 +49,7 @@ fun ImageSourceOptionDialog(
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.surface).clickable {
-                Logger.d("onclick gallery request")
-                onGalleryRequest.invoke()
-            }
+            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.surface)
                 .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -70,15 +68,13 @@ fun ImageSourceOptionDialog(
                 Icon(
                     tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier.size(25.dp),
-                    painter = painterResource(Res.drawable.ic_images),
+                    painter = painterResource(Res.drawable.ic_camera),
                     contentDescription = null
                 )
                 Text(text = "Camera", color = MaterialTheme.colors.onSurface)
             }
-            Logger.d("Gallery loaded picker")
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp).clickable {
-                    Logger.d("onclick gallery request")
                     onGalleryRequest.invoke()
                 },
                 verticalAlignment = Alignment.CenterVertically,
@@ -86,11 +82,8 @@ fun ImageSourceOptionDialog(
             ) {
                 Icon(
                     tint = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.size(25.dp).clickable {
-                        Logger.d("onclick gallery request")
-                        onGalleryRequest.invoke()
-                    },
-                    painter = painterResource(Res.drawable.compose_multiplatform),
+                    modifier = Modifier.size(25.dp),
+                    painter = painterResource(Res.drawable.ic_images),
                     contentDescription = null
                 )
                 Text(text = "Gallery", color = MaterialTheme.colors.onSurface)
