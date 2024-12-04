@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import co.touchlab.kermit.Logger
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -92,7 +91,6 @@ fun ImageSourceOptionDialog(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AlertMessageDialog(
     title: String,

@@ -16,11 +16,14 @@ import com.kmpai.photoreader.feature.permission.PermissionCallback
 import com.kmpai.photoreader.feature.permission.PermissionStatus
 import com.kmpai.photoreader.feature.permission.PermissionType
 import com.kmpai.photoreader.feature.permission.createPermissionsManager
+import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
+import com.kmpai.photoreader.feature.picker.ui.SharedImage
 import com.kmpai.photoreader.feature.picker.ui.rememberCameraManager
 import com.kmpai.photoreader.feature.picker.ui.rememberGalleryManager
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.ChatView
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.PickView
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.PickerHomeView
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,28 +57,15 @@ fun PickerHomeScreen (
         }
     })
 
-    val galleryManager = rememberGalleryManager {
-        coroutineScope.launch {
-            withContext(Dispatchers.Default) {
-                it?.toImageBitmap()
-            }?.let {
-                viewModel.getPictureData(it)
-            }?: viewModel.showPickImage()
-
-        }
+    val galleryManager = rememberGalleryManager { image: SharedImage? ->
+        useImage(coroutineScope, image, viewModel)
     }
 
-    val cameraManager = rememberCameraManager {
-        coroutineScope.launch {
-            withContext(Dispatchers.Default) {
-                it?.toImageBitmap()
-            }?.let {
-                viewModel.getPictureData(it)
-            } ?: viewModel.showPickImage()
-        }
+    val cameraManager = rememberCameraManager { image: SharedImage? ->
+        useImage(coroutineScope, image, viewModel)
     }
 
-    when(homeState) {
+    when (homeState) {
         PickerHomeState.ImageSourceOptionDialog -> {
             onTopBarConfig.invoke(TopBarConfig(Res.string.select_image, false))
             ImageSourceOptionDialog(onDismissRequest = {
@@ -86,6 +76,7 @@ fun PickerHomeScreen (
                 viewModel.launchCamera()
             })
         }
+
         PickerHomeState.LaunchCamera -> {
             if (permissionsManager.isPermissionGranted(PermissionType.CAMERA)) {
                 SideEffect { cameraManager.launch() }
@@ -93,6 +84,7 @@ fun PickerHomeScreen (
                 permissionsManager.askPermission(PermissionType.CAMERA)
             }
         }
+
         PickerHomeState.LaunchGalery -> {
             if (permissionsManager.isPermissionGranted(PermissionType.GALLERY)) {
                 SideEffect { galleryManager.launch() }
@@ -100,6 +92,7 @@ fun PickerHomeScreen (
                 permissionsManager.askPermission(PermissionType.GALLERY)
             }
         }
+
         PickerHomeState.LaunchSettings -> permissionsManager.launchSettings()
         PickerHomeState.PickPicture ->  {
             onTopBarConfig.invoke(TopBarConfig(Res.string.select_image, false))
@@ -112,25 +105,26 @@ fun PickerHomeScreen (
                 picture = pickedState.picture,
                 isLoading = pickedState.isLoading,
                 description = pickedState.description,
-                openDialog = {viewModel.showImageSourceOptionDialog() },
+                openDialog = { viewModel.showImageSourceOptionDialog() },
                 openChat = { viewModel.openChat() }
 
             )
         }
+
         PickerHomeState.ShowRationaleDialog -> {
-                AlertMessageDialog(title = "Permission Required",
-                    message = "To set your profile picture, please grant this permission. You can manage permissions in your device settings.",
-                    positiveButtonText = "Settings",
-                    negativeButtonText = "Cancel",
-                    onPositiveClick = {
-                        viewModel.launchSettings()
+            AlertMessageDialog(title = "Permission Required",
+                message = "To set your profile picture, please grant this permission. You can manage permissions in your device settings.",
+                positiveButtonText = "Settings",
+                negativeButtonText = "Cancel",
+                onPositiveClick = {
+                    viewModel.launchSettings()
 
-                    },
-                    onNegativeClick = {
-                        viewModel.showPickImage()
-                    })
+                },
+                onNegativeClick = {
+                    viewModel.showPickImage()
+                })
 
-            }
+        }
 
         is PickerHomeState.OpenChat ->  {
             onTopBarConfig.invoke(TopBarConfig(Res.string.chat_ia, true))
@@ -142,6 +136,23 @@ fun PickerHomeScreen (
             )
         }
     }
-
-
 }
+
+private fun useImage(
+    coroutineScope: CoroutineScope,
+    image: SharedImage?,
+    viewModel: PickerHomeViewModel
+) {
+    coroutineScope.launch {
+        withContext(Dispatchers.Default) {
+            val byteArray = image?.toByteArray()
+            val bitmap = image?.toImageBitmap()
+            if (byteArray != null && bitmap != null)
+                RequestedPicture(byteArray, bitmap)
+            else null
+        }?.let {
+            viewModel.getPictureData(it)
+        } ?: viewModel.showPickImage()
+    }
+}
+
