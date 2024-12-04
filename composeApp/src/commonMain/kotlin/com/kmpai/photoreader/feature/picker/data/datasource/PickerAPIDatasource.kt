@@ -13,14 +13,12 @@ class PickerAPIDatasource(
 ) : PickerDatasource {
 
     @OptIn(ExperimentalUuidApi::class)
-    override suspend fun getPictureDescription(filename: String, imageByteArray: ByteArray): Result<Picture> {
+    override suspend fun getPictureDescription(extension: String, imageByteArray: ByteArray): Result<Picture> {
         try {
-            val extension = filename.split(".")[1]
             val imageName = "${Uuid.random()}.$extension"
-
             val serverImageName = restApi.uploadImage(imageByteArray, imageName, "image/$extension")
             val response = restApi.requestImageDescription(serverImageName)
-            return Result.success(mapper.map(filename, response))
+            return Result.success(mapper.map(response))
         } catch (e: Exception) {
             return Result.failure(e)
         }

@@ -5,7 +5,7 @@ import com.kmpai.photoreader.feature.picker.domain.model.Picture
 import com.kmpai.photoreader.feature.picker.domain.repository.PickerRepository
 
 class PickerRepositoryImpl(private val datasource: PickerDatasource): PickerRepository {
-    override suspend fun getPictureDescription(filename: String, imageByteArray: ByteArray): Result<Picture> {
-        return datasource.getPictureDescription(filename, imageByteArray)
+    override suspend fun getPictureDescription(extension: String, imageByteArray: ByteArray): Result<Picture> {
+        return datasource.getPictureDescription(extension, imageByteArray)
     }
 }

@@ -1,15 +1,11 @@
 package com.kmpai.photoreader.feature.picker.di
 
-import com.kmpai.photoreader.feature.picker.data.datasource.LocalImageDatasourceImpl
-import com.kmpai.photoreader.feature.picker.data.repository.PickerRepositoryImpl
 import com.kmpai.photoreader.feature.picker.data.datasource.PickerAPIDatasource
 import com.kmpai.photoreader.feature.picker.data.mappers.PictureMapper
-import com.kmpai.photoreader.feature.picker.data.repository.LocalImageRepository
+import com.kmpai.photoreader.feature.picker.data.repository.PickerRepositoryImpl
 import com.kmpai.photoreader.feature.picker.data.rest.RestApi
 import com.kmpai.photoreader.feature.picker.data.rest.model.ImageRequestFactory
-import com.kmpai.photoreader.feature.picker.domain.datasource.LocalImageDataSource
 import com.kmpai.photoreader.feature.picker.domain.datasource.PickerDatasource
-import com.kmpai.photoreader.feature.picker.domain.repository.ImageRepository
 import com.kmpai.photoreader.feature.picker.domain.repository.PickerRepository
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
 import io.ktor.client.HttpClient
@@ -26,7 +22,7 @@ val client = HttpClient {
         level = LogLevel.ALL
         logger = object : Logger {
             override fun log(message: String) {
-                println("HTTP Client: $message");
+                println("HTTP Client: $message")
             }
         }
     }
@@ -39,12 +35,11 @@ val client = HttpClient {
 
 val pickerModule =
     module {
-        factory<ImageRepository> { LocalImageRepository(get()) }
         single<ImageRequestFactory> { ImageRequestFactory() }
         single<RestApi> { RestApi(get(), client) }
         single<PictureMapper> { PictureMapper() }
         factory<PickerDatasource> { PickerAPIDatasource(get(), get()) }
         factory<PickerRepository> { PickerRepositoryImpl(get()) }
-        single<GetPictureDescription> { GetPictureDescription(get(), get())}
+        single<GetPictureDescription> { GetPictureDescription(get())}
     }
 

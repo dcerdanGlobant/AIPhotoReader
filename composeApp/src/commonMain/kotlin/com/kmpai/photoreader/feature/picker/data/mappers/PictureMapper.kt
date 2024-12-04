@@ -5,7 +5,7 @@ import com.kmpai.photoreader.feature.picker.domain.model.Picture
 
 class PictureMapper {
 
-    fun map(imagePath: String, response: ImageResponse): Picture {
-        return Picture(imagePath, response.choices[0].message.content)
+    fun map(response: ImageResponse): Picture {
+        return Picture(response.choices[0].message.content)
     }
 }
