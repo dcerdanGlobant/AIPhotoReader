@@ -21,7 +21,7 @@ actual fun rememberGalleryManager(onResult: (SharedImage?) -> Unit): GalleryMana
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
                 onResult.invoke(
-                    com.kmpai.photoreader.feature.picker.ui.SharedImage(
+                    SharedImage(
                         BitmapUtils.getBitmapFromUri(
                             uri,
                             contentResolver

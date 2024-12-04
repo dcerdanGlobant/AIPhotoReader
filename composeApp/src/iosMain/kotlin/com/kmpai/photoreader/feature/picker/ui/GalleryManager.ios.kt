@@ -29,7 +29,7 @@ actual fun rememberGalleryManager(onResult: (SharedImage?) -> Unit): GalleryMana
             override fun imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo: Map<Any?, *>) {
                 val image = didFinishPickingMediaWithInfo[UIImagePickerControllerEditedImage] as? UIImage
                     ?: didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
-                onResult.invoke(com.kmpai.photoreader.feature.picker.ui.SharedImage(image))
+                onResult.invoke(SharedImage(image))
                 picker.dismissViewControllerAnimated(true, null)
             }
         }

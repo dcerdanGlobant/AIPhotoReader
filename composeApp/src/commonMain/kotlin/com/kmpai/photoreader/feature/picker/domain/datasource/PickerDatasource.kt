@@ -1,7 +1,8 @@
-package com.kmpai.photoreader.feature.picker.domain.repository
+package com.kmpai.photoreader.feature.picker.domain.datasource
 
 import com.kmpai.photoreader.feature.picker.domain.model.Picture
 
-interface PickerRepository {
+interface PickerDatasource {
+
     suspend fun getPictureDescription(extension: String, imageByteArray: ByteArray): Result<Picture>
 }

@@ -22,7 +22,7 @@ actual fun rememberCameraManager(onResult: (SharedImage?) -> Unit): CameraManage
         onResult = { success ->
             if (success) {
                 onResult.invoke(
-                    com.kmpai.photoreader.feature.picker.ui.SharedImage(
+                    SharedImage(
                         BitmapUtils.getBitmapFromUri(
                             tempPhotoUri,
                             contentResolver

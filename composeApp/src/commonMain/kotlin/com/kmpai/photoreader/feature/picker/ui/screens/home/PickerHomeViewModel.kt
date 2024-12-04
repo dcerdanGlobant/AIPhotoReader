@@ -3,8 +3,8 @@ package com.kmpai.photoreader.feature.picker.ui.screens.home
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,23 +20,22 @@ class PickerHomeViewModel(
     private var contentDescription: String = ""
 
 
-    fun getPictureData(bitmap: ImageBitmap) {
-        picture = bitmap
+    fun getPictureData(requestedPicture: RequestedPicture) {
+        picture = requestedPicture.bitmap
         viewModelScope.launch {
             _homeState.emit(
                 PickerHomeState.PickedPicture(
                     isLoading = true,
-                    picture = bitmap, ""
+                    picture = requestedPicture.bitmap, ""
                 )
             )
-            delay(2000)
-            getPictureDescription.invoke(bitmap)
+            getPictureDescription.invoke(requestedPicture.byteArray, requestedPicture.extension)
                 .onSuccess {
                     contentDescription = it.contentDescription ?: ""
                     _homeState.emit(
                         PickerHomeState.PickedPicture(
                             isLoading = false,
-                            picture = bitmap, it.contentDescription
+                            picture = requestedPicture.bitmap, it.contentDescription
                         )
                     )
                 }
@@ -44,7 +43,7 @@ class PickerHomeViewModel(
                     _homeState.emit(
                         PickerHomeState.PickedPicture(
                             isLoading = false,
-                            picture = bitmap, "No data"
+                            picture = requestedPicture.bitmap, "No data"
                         )
                     )
                 }
