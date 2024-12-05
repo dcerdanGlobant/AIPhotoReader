@@ -3,9 +3,9 @@ package com.kmpai.photoreader.feature.picker.di
 import coil3.Uri
 
 actual class ImageUriProvider {
-    actual var imageUrl: Uri? = null
+    actual var imageUrl: String? = null
 
-    actual fun setImageUri(uri: Uri) {
+    actual fun setImageUri(uri: String) {
         imageUrl = uri
     }
 }

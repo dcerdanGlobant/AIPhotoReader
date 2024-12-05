@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleImage(imageUri: Uri) {
-        ImageUriProviderSingleton.provider.setImageUri(imageUri.toCoilUri())
+        ImageUriProviderSingleton.provider.setImageUri(imageUri.toString())
     }
 }
 
