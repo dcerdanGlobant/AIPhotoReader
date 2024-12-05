@@ -13,12 +13,8 @@ fun PickerHomeView(homeState: PickerHomeState) {
 
     val imageUri = ImageUriProviderSingleton.provider.imageUrl
 
-    if(homeState.isLoading) {
-        CircularProgressIndicator()
-    } else {
-        Image(
-            painter = rememberAsyncImagePainter(imageUri),
-            contentDescription = null
-        )
-    }
+    Image(
+        painter = rememberAsyncImagePainter(imageUri),
+        contentDescription = null
+    )
 }
