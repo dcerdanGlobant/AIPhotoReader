@@ -5,17 +5,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
+import com.kmpai.photoreader.feature.picker.ui.screens.chat.ChatState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PickerHomeViewModel(
+class PickerViewModel(
     private val getPictureDescription: GetPictureDescription
 ) : ViewModel() {
     private val _homeState: MutableStateFlow<PickerHomeState> =
         MutableStateFlow(PickerHomeState.PickPicture)
     val homeState: StateFlow<PickerHomeState> get() = _homeState.asStateFlow()
+
+    private val _chatState: MutableStateFlow<ChatState> =
+        MutableStateFlow(ChatState())
+    val chatState: StateFlow<ChatState> get() = _chatState.asStateFlow()
+
     private var picture: ImageBitmap? = null
     private var contentDescription: String = ""
 
@@ -86,20 +92,4 @@ class PickerHomeViewModel(
             _homeState.emit(PickerHomeState.PickPicture)
         }
     }
-
-    fun openChat() {
-        viewModelScope.launch {
-            picture?.let {
-                _homeState.emit(
-                    PickerHomeState.OpenChat(
-                        picture = it,
-                        description = contentDescription
-                    )
-                )
-            }
-
-        }
-    }
-
-
 }

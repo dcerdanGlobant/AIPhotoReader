@@ -19,16 +19,15 @@ actual fun rememberGalleryManager(onResult: (SharedImage?) -> Unit): GalleryMana
     val contentResolver: ContentResolver = context.contentResolver
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            uri?.let {
-                onResult.invoke(
-                    SharedImage(
-                        BitmapUtils.getBitmapFromUri(
-                            uri,
-                            contentResolver
-                        )
+            onResult.invoke(
+                uri?.let {
+                SharedImage(
+                    BitmapUtils.getBitmapFromUri(
+                        uri,
+                        contentResolver
                     )
-                )
-            }
+                )}
+            )
         }
     return remember {
         GalleryManager(onLaunch = {

@@ -1,5 +1,10 @@
 package com.kmpai.photoreader.feature.picker.ui.screens.home
 
+import aiphotoreader.composeapp.generated.resources.Res
+import aiphotoreader.composeapp.generated.resources.camera_permission_message
+import aiphotoreader.composeapp.generated.resources.cancel
+import aiphotoreader.composeapp.generated.resources.permission_required
+import aiphotoreader.composeapp.generated.resources.settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -15,18 +20,19 @@ import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.ui.SharedImage
 import com.kmpai.photoreader.feature.picker.ui.rememberCameraManager
 import com.kmpai.photoreader.feature.picker.ui.rememberGalleryManager
-import com.kmpai.photoreader.feature.picker.ui.screens.home.views.ChatView
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.PickView
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.PickerHomeView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PickerHomeScreen(
-    viewModel: PickerHomeViewModel = koinViewModel<PickerHomeViewModel>()
+fun PickerHomeScreen (
+    viewModel: PickerViewModel = koinViewModel<PickerViewModel>(),
+    onOpenChat: () -> Unit,
 ) {
     val homeState by viewModel.homeState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -87,7 +93,9 @@ fun PickerHomeScreen(
         }
 
         PickerHomeState.LaunchSettings -> permissionsManager.launchSettings()
-        PickerHomeState.PickPicture -> PickView() { viewModel.showImageSourceOptionDialog() }
+        PickerHomeState.PickPicture ->  {
+            PickView() { viewModel.showImageSourceOptionDialog()}
+        }
         is PickerHomeState.PickedPicture -> {
             val pickedState = homeState as PickerHomeState.PickedPicture
             PickerHomeView(
@@ -95,41 +103,37 @@ fun PickerHomeScreen(
                 isLoading = pickedState.isLoading,
                 description = pickedState.description,
                 openDialog = { viewModel.showImageSourceOptionDialog() },
-                openChat = { viewModel.openChat() }
+                openChat = {onOpenChat.invoke() }
 
             )
         }
 
         PickerHomeState.ShowRationaleDialog -> {
-            AlertMessageDialog(title = "Permission Required",
-                message = "To set your profile picture, please grant this permission. You can manage permissions in your device settings.",
-                positiveButtonText = "Settings",
-                negativeButtonText = "Cancel",
-                onPositiveClick = {
-                    viewModel.launchSettings()
+            cameraPermissionAlertDialog(viewModel)
 
-                },
-                onNegativeClick = {
-                    viewModel.showPickImage()
-                })
-
-        }
-
-        is PickerHomeState.OpenChat -> {
-            val pickedState = homeState as PickerHomeState.OpenChat
-            ChatView(
-                picture = pickedState.picture,
-                description = pickedState.description,
-                isLoading = false
-            )
         }
     }
+}
+
+@Composable
+private fun cameraPermissionAlertDialog(viewModel: PickerViewModel) {
+    AlertMessageDialog(title = stringResource(Res.string.permission_required),
+        message = stringResource(Res.string.camera_permission_message),
+        positiveButtonText = stringResource(Res.string.settings),
+        negativeButtonText = stringResource(Res.string.cancel),
+        onPositiveClick = {
+            viewModel.launchSettings()
+
+        },
+        onNegativeClick = {
+            viewModel.showPickImage()
+        })
 }
 
 private fun useImage(
     coroutineScope: CoroutineScope,
     image: SharedImage?,
-    viewModel: PickerHomeViewModel
+    viewModel: PickerViewModel
 ) {
     coroutineScope.launch {
         withContext(Dispatchers.Default) {
