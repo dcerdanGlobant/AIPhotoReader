@@ -29,6 +29,8 @@ actual fun rememberCameraManager(onResult: (SharedImage?) -> Unit): CameraManage
                         )
                     )
                 )
+            } else {
+                onResult.invoke(null)
             }
         }
     )

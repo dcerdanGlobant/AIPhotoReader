@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_image">Select Image: </string>
-    <string name="image_description">Image Description</string>
+    <string name="toolbar_home_picker">IA Photo Reader</string>
+    <string name="toolbar_pick_detail">Image Description</string>
     <string name="chat_ia">Chat IA</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="settings">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="camera_permission_message"> To set your profile picture, please grant this permission. You can manage permissions in your device settings.</string>
 </resources>

@@ -10,5 +10,4 @@ sealed class PickerHomeState {
     data object ShowRationaleDialog : PickerHomeState()
     data object LaunchSettings: PickerHomeState()
     data class PickedPicture(val isLoading: Boolean = true, val picture: ImageBitmap, val description: String? = null): PickerHomeState()
-    data class OpenChat(val picture: ImageBitmap, val description: String? = null): PickerHomeState()
 }
