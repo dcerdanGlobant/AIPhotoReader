@@ -5,7 +5,6 @@ import com.kmpai.photoreader.feature.picker.data.mappers.PictureMapper
 import com.kmpai.photoreader.feature.picker.data.repository.PickerRepositoryImpl
 import com.kmpai.photoreader.feature.picker.data.rest.RestApi
 import com.kmpai.photoreader.feature.picker.data.rest.model.ImageRequestFactory
-import com.kmpai.photoreader.feature.picker.domain.datasource.PickerDatasource
 import com.kmpai.photoreader.feature.picker.domain.repository.PickerRepository
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
 import io.ktor.client.HttpClient
@@ -38,7 +37,7 @@ val pickerModule =
         single<ImageRequestFactory> { ImageRequestFactory() }
         single<RestApi> { RestApi(get(), client) }
         single<PictureMapper> { PictureMapper() }
-        factory<PickerDatasource> { PickerAPIDatasource(get(), get()) }
+        single<PickerAPIDatasource> { PickerAPIDatasource(get(), get()) }
         factory<PickerRepository> { PickerRepositoryImpl(get()) }
         single<GetPictureDescription> { GetPictureDescription(get())}
     }

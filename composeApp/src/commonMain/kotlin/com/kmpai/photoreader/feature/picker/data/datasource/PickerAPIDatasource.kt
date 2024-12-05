@@ -2,7 +2,6 @@ package com.kmpai.photoreader.feature.picker.data.datasource
 
 import com.kmpai.photoreader.feature.picker.data.mappers.PictureMapper
 import com.kmpai.photoreader.feature.picker.data.rest.RestApi
-import com.kmpai.photoreader.feature.picker.domain.datasource.PickerDatasource
 import com.kmpai.photoreader.feature.picker.domain.model.Picture
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -10,10 +9,10 @@ import kotlin.uuid.Uuid
 class PickerAPIDatasource(
     private val restApi: RestApi,
     private val mapper: PictureMapper
-) : PickerDatasource {
+) {
 
     @OptIn(ExperimentalUuidApi::class)
-    override suspend fun getPictureDescription(extension: String, imageByteArray: ByteArray): Result<Picture> {
+    suspend fun getPictureDescription(extension: String, imageByteArray: ByteArray): Result<Picture> {
         try {
             val imageName = "${Uuid.random()}.$extension"
             val serverImageName = restApi.uploadImage(imageByteArray, imageName, "image/$extension")
