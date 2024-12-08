@@ -82,7 +82,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
     override fun isPermissionGranted(permission: PermissionType): Boolean {
         return when (permission) {
             PermissionType.GALLERY -> PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
-            PermissionType.CAMERA -> PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
+            PermissionType.CAMERA -> AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) == AVAuthorizationStatusAuthorized
         }
     }
 
