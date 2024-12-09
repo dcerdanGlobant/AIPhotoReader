@@ -1,6 +1,6 @@
 package com.kmpai.photoreader.feature.picker.di
 
-import coil3.Uri
+import androidx.compose.ui.graphics.ImageBitmap
 
 expect class ImageUriProvider {
     var imageUrl: String?

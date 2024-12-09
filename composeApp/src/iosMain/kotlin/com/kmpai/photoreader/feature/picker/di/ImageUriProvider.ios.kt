@@ -1,5 +1,6 @@
 package com.kmpai.photoreader.feature.picker.di
 
+import androidx.compose.ui.graphics.ImageBitmap
 import coil3.Uri
 
 actual class ImageUriProvider {

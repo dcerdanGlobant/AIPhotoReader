@@ -1,7 +1,5 @@
 package com.kmpai.photoreader.feature.picker.di
 
-import coil3.Uri
-
 actual class ImageUriProvider {
     actual var imageUrl: String? = null
 
