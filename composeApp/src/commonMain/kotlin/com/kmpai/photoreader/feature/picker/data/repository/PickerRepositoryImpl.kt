@@ -1,6 +1,6 @@
 package com.kmpai.photoreader.feature.picker.data.repository
 
-import com.kmpai.photoreader.feature.picker.domain.datasource.PickerDatasource
+import com.kmpai.photoreader.feature.picker.data.datasource.PickerDatasource
 import com.kmpai.photoreader.feature.picker.domain.model.Picture
 import com.kmpai.photoreader.feature.picker.domain.repository.PickerRepository
 

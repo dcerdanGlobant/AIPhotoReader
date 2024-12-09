@@ -1,7 +1,8 @@
 package com.kmpai.photoreader.feature.picker.data.rest
 
-import com.kmpai.photoreader.feature.picker.data.rest.model.ImageRequestFactory
+import com.kmpai.photoreader.feature.picker.data.rest.model.ImageRequest
 import com.kmpai.photoreader.feature.picker.data.rest.model.ImageResponse
+import com.kmpai.photoreader.feature.picker.data.rest.model.Message
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -16,7 +17,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 
-class RestApi(private val imageRequestFactory: ImageRequestFactory, private val client: HttpClient) {
+class RestApi(private val client: HttpClient) {
 
     companion object {
         private const val ORGANIZATION = "ae3a4928-505c-40c7-b3bc-c758a217d59a"
@@ -28,6 +29,11 @@ class RestApi(private val imageRequestFactory: ImageRequestFactory, private val 
         private const val FILE_NAME_HEADER = "fileName"
         private const val ACCEPT_HEADER = "Accept"
         private const val ACCEPT_HEADER_VALUE = "application/json"
+
+        private const val ASSISTANT = "saia:assistant:ImageAssistant"
+        private const val ROLE = "user"
+        private const val REVISION = 1L
+        private const val REVISION_NAME = "1"
     }
 
     /**
@@ -79,11 +85,20 @@ class RestApi(private val imageRequestFactory: ImageRequestFactory, private val 
             headers {
                 append(HttpHeaders.Authorization, "Bearer $apiKey")
             }
-            setBody(imageRequestFactory.create(imageName))
+            setBody(createImageRequest(imageName))
         }
         if (response.status == HttpStatusCode.OK) {
             return response.body<ImageResponse>()
         }
         throw Exception("ImageAnalysisError: status: ${response.status}")
+    }
+
+    private fun createImageRequest(fileName: String) : ImageRequest {
+        return ImageRequest(
+            model = ASSISTANT,
+            messages = listOf(Message(ROLE, "Analyse an image {file: $fileName}")),
+            revision = REVISION,
+            revisionName = REVISION_NAME,
+        )
     }
 }
