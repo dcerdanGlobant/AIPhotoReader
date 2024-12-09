@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.feature.picker.domain.datasource
+package com.kmpai.photoreader.feature.picker.data.datasource
 
 import com.kmpai.photoreader.feature.picker.domain.model.Picture
 
