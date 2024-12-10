@@ -21,9 +21,9 @@ struct ShareView: View {
         VStack(spacing: 0) {
             navigationView
             contentView
-        }.onAppear {
-            viewModel.loadImage()
         }
+        .interactiveDismissDisabled()
+        .onAppear { viewModel.loadData() }
     }
 }
 
@@ -31,37 +31,45 @@ struct ShareView: View {
 private extension ShareView {
     var navigationView: some View {
         HStack(spacing: 0) {
-            Spacer()
-                .frame(width: UIScreen.main.bounds.width / 3)
-            Text(verbatim: "AiPhotoHeader")
-                .font(.headline)
-                .frame(width: UIScreen.main.bounds.width / 3)
             Button {
                 viewModel.dismiss()
             } label: {
                 HStack(spacing: 0) {
+                    Text(verbatim: "Cancel")
                     Spacer()
-                    Text(verbatim: "Close")
-                }.padding(.trailing)
+                }.padding(.leading)
             }.frame(width: UIScreen.main.bounds.width / 3)
+            Text(verbatim: "AiPhotoHeader")
+                .font(.headline)
+                .frame(width: UIScreen.main.bounds.width / 3)
+            Spacer()
+                .frame(width: UIScreen.main.bounds.width / 3)
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(.ultraThinMaterial)
         .overlay(Divider(), alignment: .bottom)
     }
     
     var contentView: some View {
-        VStack(alignment: .center, spacing: 20) {
-            Image(uiImage: viewModel.image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: UIScreen.main.bounds.width - 40)
-            Button {
-                viewModel.getMoreInfo()
-            } label: {
-                Text(verbatim: "Get More Info")
-            }.buttonStyle(.bordered)
-            Spacer()
-        }.padding(20)
+        ScrollView(.vertical) {
+            VStack(alignment: .center, spacing: 20) {
+                Image(uiImage: viewModel.image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: UIScreen.main.bounds.width - 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                if let description = viewModel.description {
+                    Text(description)
+                }
+                if viewModel.description.isNotNil {
+                    Button {
+                        viewModel.loadDescription()
+                    } label: {
+                        Text(verbatim: "Get More Info")
+                    }.buttonStyle(.bordered)
+                }
+                Spacer()
+            }.padding(20)
+        }.scrollBounceBehavior(.basedOnSize)
     }
 }
