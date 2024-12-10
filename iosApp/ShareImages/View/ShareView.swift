@@ -23,7 +23,7 @@ struct ShareView: View {
             contentView
         }
         .interactiveDismissDisabled()
-        .onAppear { viewModel.loadData() }
+        .onAppear { viewModel.viewAppeared() }
     }
 }
 
@@ -35,11 +35,12 @@ private extension ShareView {
                 viewModel.dismiss()
             } label: {
                 HStack(spacing: 0) {
-                    Text(verbatim: "Cancel")
+                    Text("cancel")
+                        .font(.body)
                     Spacer()
                 }.padding(.leading)
             }.frame(width: UIScreen.main.bounds.width / 3)
-            Text(verbatim: "AiPhotoHeader")
+            Text("aiphotoreader")
                 .font(.headline)
                 .frame(width: UIScreen.main.bounds.width / 3)
             Spacer()
@@ -57,15 +58,21 @@ private extension ShareView {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.width - 40)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                 if let description = viewModel.description {
                     Text(description)
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                } else {
+                    ProgressView()
+                        .progressViewStyle(.circular)
                 }
                 if viewModel.description.isNotNil {
                     Button {
-                        viewModel.loadDescription()
+                        viewModel.getMoreInfo()
                     } label: {
-                        Text(verbatim: "Get More Info")
+                        Text("getmoreinfo")
+                            .font(.body)
                     }.buttonStyle(.bordered)
                 }
                 Spacer()
