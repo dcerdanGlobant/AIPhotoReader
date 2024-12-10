@@ -1,12 +1,13 @@
 package com.kmpai.photoreader.feature.picker.di
 
-import androidx.compose.ui.graphics.ImageBitmap
+class ImageUriProvider {
+    var imageUrl: String? = null
 
-expect class ImageUriProvider {
-    var imageUrl: String?
-    fun setImageUri(uri: String)
+    fun setImageUri(uri: String) {
+        imageUrl = uri
+    }
 }
 
-expect object ImageUriProviderSingleton {
-    val provider: ImageUriProvider
+object ImageUriProviderSingleton {
+    val provider: ImageUriProvider = ImageUriProvider()
 }
