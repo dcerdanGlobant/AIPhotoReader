@@ -31,20 +31,21 @@ struct ShareView: View {
 private extension ShareView {
     var navigationView: some View {
         HStack(spacing: 0) {
+            Text("aiphotoreader")
+                .fontWeight(.semibold)
+                .font(.system(size: 18))
+                .frame(maxWidth: .infinity)
+        }
+        .overlay(alignment: .leading) {
             Button {
                 viewModel.dismiss()
             } label: {
                 HStack(spacing: 0) {
                     Text("cancel")
-                        .font(.body)
+                        .font(.system(size: 17))
                     Spacer()
-                }.padding(.leading)
-            }.frame(width: UIScreen.main.bounds.width / 3)
-            Text("aiphotoreader")
-                .font(.headline)
-                .frame(width: UIScreen.main.bounds.width / 3)
-            Spacer()
-                .frame(width: UIScreen.main.bounds.width / 3)
+                }
+            }
         }
         .padding()
         .background(.ultraThinMaterial)
@@ -64,6 +65,7 @@ private extension ShareView {
                         .font(.body)
                         .multilineTextAlignment(.center)
                 } else {
+                    Spacer(minLength: 180)
                     ProgressView()
                         .progressViewStyle(.circular)
                 }
@@ -75,7 +77,7 @@ private extension ShareView {
                             .font(.body)
                     }.buttonStyle(.bordered)
                 }
-                Spacer()
+                Spacer(minLength: 40)
             }.padding(20)
         }.scrollBounceBehavior(.basedOnSize)
     }
