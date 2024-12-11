@@ -16,10 +16,12 @@ import com.kmpai.photoreader.feature.permission.PermissionCallback
 import com.kmpai.photoreader.feature.permission.PermissionStatus
 import com.kmpai.photoreader.feature.permission.PermissionType
 import com.kmpai.photoreader.feature.permission.createPermissionsManager
+import com.kmpai.photoreader.feature.picker.di.ImageUriProviderSingleton
 import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.ui.SharedImage
 import com.kmpai.photoreader.feature.picker.ui.rememberCameraManager
 import com.kmpai.photoreader.feature.picker.ui.rememberGalleryManager
+import com.kmpai.photoreader.feature.picker.ui.rememberSharedManager
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.PickView
 import com.kmpai.photoreader.feature.picker.ui.screens.home.views.PickerHomeView
 import kotlinx.coroutines.CoroutineScope
@@ -81,6 +83,12 @@ fun PickerHomeScreen (
                 SideEffect { cameraManager.launch() }
             } else {
                 permissionsManager.askPermission(PermissionType.CAMERA)
+            }
+        }
+
+        PickerHomeState.SharedPicture -> {
+            rememberSharedManager { image: SharedImage? ->
+                useImage(coroutineScope, image, viewModel)
             }
         }
 

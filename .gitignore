@@ -1,19 +1,25 @@
+# Android
 *.iml
 .kotlin
 .gradle
 **/build/
-xcuserdata
 !src/**/build/
 local.properties
 .idea
-.DS_Store
 captures
 .externalNativeBuild
 .cxx
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcodeproj/xcshareddata/
-!*.xcodeproj/project.xcworkspace/
-!*.xcworkspace/contents.xcworkspacedata
-**/xcshareddata/WorkspaceSettings.xcsettings
 composeApp/src/commonMain/composeResources/values/secrets.xml
+
+# Xcode
+.DS_Store
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.xcuserstate
+*.xcworkspacedata
+DerivedData/
+*.ipa
+*.dSYM
+*.app
+*.xcodeproj/project.xcworkspace/xcuserdata/
