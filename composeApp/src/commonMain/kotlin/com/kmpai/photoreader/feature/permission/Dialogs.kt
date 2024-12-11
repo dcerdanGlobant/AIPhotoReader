@@ -18,22 +18,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 
@@ -48,12 +46,12 @@ fun ImageSourceOptionDialog(
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.surface)
+            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)
                 .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Select an Image Source",
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -65,12 +63,12 @@ fun ImageSourceOptionDialog(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(
-                    tint = MaterialTheme.colors.onSurface,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(25.dp),
                     painter = painterResource(Res.drawable.ic_camera),
                     contentDescription = null
                 )
-                Text(text = "Camera", color = MaterialTheme.colors.onSurface)
+                Text(text = "Camera", color = MaterialTheme.colorScheme.onSurface)
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp).clickable {
@@ -80,12 +78,12 @@ fun ImageSourceOptionDialog(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(
-                    tint = MaterialTheme.colors.onSurface,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(25.dp),
                     painter = painterResource(Res.drawable.ic_images),
                     contentDescription = null
                 )
-                Text(text = "Gallery", color = MaterialTheme.colors.onSurface)
+                Text(text = "Gallery", color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }
@@ -113,7 +111,7 @@ fun AlertMessageDialog(
             shape = RoundedCornerShape(size = 12.dp)
         ) {
             Column(
-                modifier = Modifier.background(MaterialTheme.colors.secondaryVariant)
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                     .padding(all = 16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -128,18 +126,18 @@ fun AlertMessageDialog(
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = title,
-                    fontSize = MaterialTheme.typography.subtitle2.fontSize,
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colors.onBackground,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 message?.let {
                     Text(
                         text = it,
-                        fontSize = MaterialTheme.typography.h6.fontSize,
+                        fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -154,8 +152,6 @@ fun AlertMessageDialog(
                             modifier = Modifier.weight(1f), onClick = {
                                 onNegativeClick()
                             }, colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                backgroundColor = MaterialTheme.colors.primary
                             )
                         ) {
                             Text(text = it, textAlign = TextAlign.Center, maxLines = 1)
@@ -168,8 +164,6 @@ fun AlertMessageDialog(
                             modifier = Modifier.weight(1f), onClick = {
                                 onPositiveClick()
                             }, colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                backgroundColor = MaterialTheme.colors.primary
                             )
                         ) {
                             Text(text = it, textAlign = TextAlign.Center, maxLines = 1)

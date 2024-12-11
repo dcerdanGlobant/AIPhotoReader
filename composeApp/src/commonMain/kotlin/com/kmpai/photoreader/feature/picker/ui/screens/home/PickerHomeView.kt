@@ -1,8 +1,8 @@
 package com.kmpai.photoreader.feature.picker.ui.screens.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import coil3.compose.rememberAsyncImagePainter
 import com.kmpai.photoreader.feature.picker.di.ImageUriProvider
