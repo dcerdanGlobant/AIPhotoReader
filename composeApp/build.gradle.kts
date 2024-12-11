@@ -86,6 +86,10 @@ kotlin {
             implementation(libs.coil.compose)
         }
 
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+
         iosMain.dependencies {
             // Ktor
             implementation(libs.ktor.client.darwin)
