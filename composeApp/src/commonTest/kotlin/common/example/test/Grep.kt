@@ -24,7 +24,7 @@ class GrepTest {
 
         assertEquals(2, results.size)
         for (result in results) {
-            assertContains(result, "abf")
+            assertContains(result, "abc")
         }
     }
 }
