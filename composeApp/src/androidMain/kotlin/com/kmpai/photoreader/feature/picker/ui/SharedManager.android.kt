@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
-import com.kmpai.photoreader.feature.picker.di.ImageUriProviderSingleton
+import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 
 @Composable
 actual fun rememberSharedManager(onResult: (SharedImage?) -> Unit) {

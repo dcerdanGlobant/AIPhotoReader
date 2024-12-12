@@ -3,7 +3,7 @@ package com.kmpai.photoreader.feature.picker.ui.screens.home
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kmpai.photoreader.feature.picker.di.ImageUriProviderSingleton
+import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
 import com.kmpai.photoreader.feature.picker.ui.screens.chat.ChatState
@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 @OptIn(ExperimentalEncodingApi::class)

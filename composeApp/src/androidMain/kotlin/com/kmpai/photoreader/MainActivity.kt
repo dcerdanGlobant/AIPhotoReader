@@ -8,9 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.toCoilUri
 import com.kmpai.photoreader.core.ui.App
-import com.kmpai.photoreader.feature.picker.di.ImageUriProviderSingleton
+import com.kmpai.photoreader.core.ui.utils.parcelable
+import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 
 class MainActivity : ComponentActivity() {
 
@@ -24,8 +24,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIncomingShare(intent: Intent) {
-        if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/*") == true) {
-            val imageUri: Uri? = intent.getParcelableExtra(Intent.EXTRA_STREAM)
+        if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true) {
+            val imageUri: Uri? = intent.parcelable(Intent.EXTRA_STREAM)
             imageUri?.let {
                 handleImage(imageUri)
             }
@@ -36,6 +36,8 @@ class MainActivity : ComponentActivity() {
         ImageUriProviderSingleton.provider.setImageUri(imageUri.toString())
     }
 }
+
+
 
 @Preview
 @Composable

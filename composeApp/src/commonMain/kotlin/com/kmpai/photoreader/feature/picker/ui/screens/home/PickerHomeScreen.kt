@@ -16,7 +16,6 @@ import com.kmpai.photoreader.feature.permission.PermissionCallback
 import com.kmpai.photoreader.feature.permission.PermissionStatus
 import com.kmpai.photoreader.feature.permission.PermissionType
 import com.kmpai.photoreader.feature.permission.createPermissionsManager
-import com.kmpai.photoreader.feature.picker.di.ImageUriProviderSingleton
 import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.ui.SharedImage
 import com.kmpai.photoreader.feature.picker.ui.rememberCameraManager

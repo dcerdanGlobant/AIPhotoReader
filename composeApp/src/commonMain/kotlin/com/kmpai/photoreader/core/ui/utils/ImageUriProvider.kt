@@ -1,4 +1,4 @@
-package com.kmpai.photoreader.feature.picker.di
+package com.kmpai.photoreader.core.ui.utils
 
 class ImageUriProvider {
     var imageUrl: String? = null
