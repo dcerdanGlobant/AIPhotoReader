@@ -29,7 +29,18 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get more info"
+            "value" : "Get more information"
+          }
+        }
+      }
+    },
+    "loading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading information"
           }
         }
       }
