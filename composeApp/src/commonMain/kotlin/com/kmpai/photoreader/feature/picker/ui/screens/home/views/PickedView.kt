@@ -59,7 +59,8 @@ fun PickerHomeView(
             if (!isLoading) {
                 FlowRow(
                     modifier = Modifier.padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Button(onClick = { openDialog.invoke() }) {
                         Text(stringResource(Res.string.select_another_image))
