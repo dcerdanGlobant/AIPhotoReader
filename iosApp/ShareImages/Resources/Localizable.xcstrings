@@ -33,17 +33,6 @@
           }
         }
       }
-    },
-    "loading" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading information"
-          }
-        }
-      }
     }
   },
   "version" : "1.0"
