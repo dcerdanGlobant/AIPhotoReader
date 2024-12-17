@@ -33,7 +33,7 @@ struct ShareView: View {
 private extension ShareView {
     var navigationView: some View {
         HStack(spacing: 0) {
-            Text("aiphotoreader")
+            Text(String.shareImage.title.localized)
                 .fontWeight(.semibold)
                 .font(.system(size: 18))
                 .frame(maxWidth: .infinity)
@@ -43,7 +43,7 @@ private extension ShareView {
             Button {
                 viewModel.dismiss()
             } label: {
-                Text("cancel")
+                Text(String.shareImage.cancel.localized)
                     .font(.system(size: 17))
             }
         }
@@ -55,12 +55,14 @@ private extension ShareView {
     var contentView: some View {
         ScrollView(.vertical) {
             VStack(alignment: .center, spacing: 20) {
-                Image(uiImage: viewModel.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: UIScreen.main.bounds.width - 40)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .accessibilityHidden(true)
+                if let image = viewModel.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: UIScreen.main.bounds.width - 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .accessibilityHidden(true)
+                }
                 if let description = viewModel.description {
                     Text(description)
                         .font(.body)
@@ -68,7 +70,7 @@ private extension ShareView {
                         .accessibilityFocused($isDescriptionFocused)
                         .onAppear(perform: onAppearDescription)
                 } else {
-                    Spacer(minLength: 180)
+                    Spacer(minLength: 150)
                     ProgressView()
                         .progressViewStyle(.circular)
                         .accessibilityHidden(true)
@@ -77,7 +79,7 @@ private extension ShareView {
                     Button {
                         viewModel.getMoreInfo()
                     } label: {
-                        Text("getmoreinfo")
+                        Text(String.shareImage.getMoreInfo.localized)
                             .font(.body)
                     }.buttonStyle(.bordered)
                 }
@@ -87,9 +89,17 @@ private extension ShareView {
     }
 }
 
+// MARK: Logic
+private extension ShareView {
+    func setupScreenWidth() {
+        viewModel.setScreenWidth(UIScreen.main.bounds.width)
+    }
+}
+
 // MARK: Bindings
 private extension ShareView {
     func onAppearView() {
+        setupScreenWidth()
         viewModel.viewAppeared()
     }
     

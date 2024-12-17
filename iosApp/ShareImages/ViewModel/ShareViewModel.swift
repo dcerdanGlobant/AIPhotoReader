@@ -7,17 +7,22 @@
 //
 
 import SwiftUI
+import ComposeApp
 import UniformTypeIdentifiers
 
 // MARK: - ShareViewModel
 final class ShareViewModel: ObservableObject {
     private let info: ShareViewInfo
+    private let dependencies = KoinDependency()
+    private let getPictureDescription: GetPictureDescription
+    private var screenWidth: CGFloat = 400
     
-    @Published var image = UIImage()
+    @Published var image: UIImage?
     @Published var description: String?
     
     init(with info: ShareViewInfo) {
         self.info = info
+        getPictureDescription = dependencies.getPictureDescription()
     }
 }
 
@@ -25,7 +30,10 @@ final class ShareViewModel: ObservableObject {
 extension ShareViewModel {
     func viewAppeared() {
         loadImage()
-        loadDescription()
+    }
+    
+    func setScreenWidth(_ width: CGFloat) {
+        screenWidth = width
     }
     
     func getMoreInfo() {
@@ -40,22 +48,51 @@ extension ShareViewModel {
 // MARK: - Logic
 private extension ShareViewModel {
     func loadImage() {
-        info.itemProvider.loadDataRepresentation(forTypeIdentifier: UTType.image.identifier) { data, error in
-            guard let data, let image = UIImage(data: data) else { return }
-            let aspectRatio = image.size.height / image.size.width
-            let width = UIScreen.main.bounds.width - 40
-            let height = width * aspectRatio
-            let size = CGSize(width: width, height: height)
-            guard let preview = image.preparingThumbnail(of: size) else { return }
-            self.image = preview
+        _ = info.itemProvider.loadDataRepresentation(for: .image) { [weak self] data, error in
+            guard let self else { return }
+            if let data, let originalImage = UIImage(data: data), error.isNil {
+                let aspectRatio = originalImage.size.height / originalImage.size.width
+                let width = screenWidth
+                let height = width * aspectRatio
+                let size = CGSize(width: width, height: height)
+                if let previewImage = originalImage.preparingThumbnail(of: size) {
+                    image = previewImage
+                    loadDescription()
+                } else {
+                    description = String.shareImage.noPreviewImage.localized
+                }
+            } else {
+                description = .shareImage.noOriginalImage.localized
+            }
         }
     }
     
     func loadDescription() {
         description = nil
-        // TODO: Do API call
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        guard let previewImage = image else {
+            description = .shareImage.noPreviewImage.localized
+            return
         }
+        if let kotlinByteArray = getKotlinByteArray(from: previewImage) {
+            getPictureDescription.invoke(image: kotlinByteArray, extension: "jpeg") { [weak self] result, error in
+                guard let self else { return }
+                if let string = result as? String {
+                    description = string
+                } else {
+                    description = .shareImage.noImageDescription.localized
+                }
+            }
+        } else {
+            description = .shareImage.noByteArray.localized
+        }
+    }
+    
+    func getKotlinByteArray(from image: UIImage) -> KotlinByteArray? {
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else { return nil }
+        let byteArray = KotlinByteArray(size: Int32(imageData.count))
+        for (index, byte) in imageData.enumerated() {
+            byteArray.set(index: Int32(index), value: Int8(bitPattern: byte))
+        }
+        return byteArray
     }
 }
