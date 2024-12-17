@@ -10,6 +10,7 @@ import SwiftUI
 
 // MARK: - ShareView
 struct ShareView: View {
+    @AccessibilityFocusState private var isDescriptionFocused: Bool
     @StateObject private var viewModel: ShareViewModel
     
     init(with viewModel: ShareViewModel) {
@@ -23,7 +24,8 @@ struct ShareView: View {
             contentView
         }
         .interactiveDismissDisabled()
-        .onAppear { viewModel.viewAppeared() }
+        .onAppear(perform: onAppearView)
+        .accessibilityHidden(viewModel.description.isNil)
     }
 }
 
@@ -35,16 +37,14 @@ private extension ShareView {
                 .fontWeight(.semibold)
                 .font(.system(size: 18))
                 .frame(maxWidth: .infinity)
+                .accessibilityAddTraits(.isHeader)
         }
         .overlay(alignment: .leading) {
             Button {
                 viewModel.dismiss()
             } label: {
-                HStack(spacing: 0) {
-                    Text("cancel")
-                        .font(.system(size: 17))
-                    Spacer()
-                }
+                Text("cancel")
+                    .font(.system(size: 17))
             }
         }
         .padding()
@@ -60,14 +60,18 @@ private extension ShareView {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.width - 40)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .accessibilityHidden(true)
                 if let description = viewModel.description {
                     Text(description)
                         .font(.body)
                         .multilineTextAlignment(.center)
+                        .accessibilityFocused($isDescriptionFocused)
+                        .onAppear(perform: onAppearDescription)
                 } else {
                     Spacer(minLength: 180)
                     ProgressView()
                         .progressViewStyle(.circular)
+                        .accessibilityHidden(true)
                 }
                 if viewModel.description.isNotNil {
                     Button {
@@ -80,5 +84,16 @@ private extension ShareView {
                 Spacer(minLength: 40)
             }.padding(20)
         }.scrollBounceBehavior(.basedOnSize)
+    }
+}
+
+// MARK: Bindings
+private extension ShareView {
+    func onAppearView() {
+        viewModel.viewAppeared()
+    }
+    
+    func onAppearDescription() {
+        isDescriptionFocused = true
     }
 }
