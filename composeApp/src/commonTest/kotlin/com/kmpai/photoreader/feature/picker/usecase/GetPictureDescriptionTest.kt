@@ -8,6 +8,7 @@ import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
+import dev.mokkery.verify.VerifyMode.Companion.atMost
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
@@ -26,7 +27,7 @@ class GetPictureDescriptionTest {
         val getPictureDescriptionResult = GetPictureDescription(repository).invoke(image = ByteArray(2), extension = "")
 
         assertTrue { (getPictureDescriptionResult == Result.success(Picture(contentDescription = "Example"))) }
-        verifySuspend {
+        verifySuspend (atMost(1)){ //Call expected
             repository.getPictureDescription(any(),any())
         }
     }
