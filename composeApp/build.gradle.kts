@@ -8,6 +8,12 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.mokkery)
+    jacoco
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+    reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
 }
 
 repositories {
@@ -18,7 +24,6 @@ repositories {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -97,9 +102,7 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.junit)
-            implementation(libs.mockk)
-            implementation(libs.mockk.android)
-            implementation(libs.mockk.agent)
+            runtimeOnly(libs.junit.platform.launcher)
         }
 
         iosMain.dependencies {
@@ -108,10 +111,6 @@ kotlin {
 
             // / Coroutines
             //implementation(libs.kotlinx.coroutines.swing)
-        }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }
@@ -145,4 +144,30 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+tasks.register("jacocoTestReport", JacocoReport::class) {
+    dependsOn(tasks.withType(Test::class))
+    val coverageSourceDirs = arrayOf(
+        "src/commonMain"
+    )
+
+    val buildDirectory = layout.buildDirectory
+
+    val classFiles = buildDirectory.dir("classes/kotlin/jvm").get().asFile
+        .walkBottomUp()
+        .toSet()
+
+    classDirectories.setFrom(classFiles)
+    sourceDirectories.setFrom(files(coverageSourceDirs))
+
+    buildDirectory.files("jacoco/jvmTest.exec").let {
+        executionData.setFrom(it)
+    }
+
+    reports {
+        xml.required = true
+        csv.required = true
+        html.required = true
+    }
 }
