@@ -97,7 +97,9 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.junit)
-            implementation(libs.assertk)
+            implementation(libs.mockk)
+            implementation(libs.mockk.android)
+            implementation(libs.mockk.agent)
         }
 
         iosMain.dependencies {

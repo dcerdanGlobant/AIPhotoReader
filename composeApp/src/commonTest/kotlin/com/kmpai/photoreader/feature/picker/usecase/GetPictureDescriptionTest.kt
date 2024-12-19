@@ -14,12 +14,11 @@ import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-
 class GetPictureDescriptionTest {
-
 
     @Test
     fun `returns a picture`() = runBlocking {
+        //val repositoryMockk = mockk<PickerRepository>()
 
         val repository = mock<PickerRepository>(MockMode.autofill)
         everySuspend { repository.getPictureDescription(any(),any())} returns Result.success(Picture(contentDescription = "Example"))
