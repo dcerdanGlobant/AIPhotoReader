@@ -2,7 +2,6 @@ package com.kmpai.photoreader.feature.picker.ui
 
 import android.content.ContentResolver
 import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import com.kmpai.photoreader.core.ui.utils.UriUtils
 import java.io.ByteArrayOutputStream
 
 @Composable
@@ -22,7 +22,7 @@ actual fun rememberGalleryManager(onResult: (SharedImage?) -> Unit): GalleryMana
             onResult.invoke(
                 uri?.let {
                 SharedImage(
-                    BitmapUtils.getBitmapFromUri(
+                    UriUtils.getBitmapFromUri(
                         uri,
                         contentResolver
                     )
@@ -64,13 +64,3 @@ actual class SharedImage(private val bitmap: android.graphics.Bitmap?) {
     }
 }
 
-object BitmapUtils {
-    fun getBitmapFromUri(uri: Uri, contentResolver: ContentResolver): android.graphics.Bitmap? {
-        return try {
-            contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-}

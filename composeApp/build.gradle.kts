@@ -44,6 +44,9 @@ kotlin {
 
             // Ktor
             implementation(libs.ktor.client.okhttp)
+
+            // Exif
+            implementation(libs.exif.metadata.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

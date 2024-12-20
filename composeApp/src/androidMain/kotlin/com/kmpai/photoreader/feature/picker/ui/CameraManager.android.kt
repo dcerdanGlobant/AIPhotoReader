@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.kmpai.photoreader.ComposeFileProvider
+import com.kmpai.photoreader.core.ui.utils.UriUtils
 
 @Composable
 actual fun rememberCameraManager(onResult: (SharedImage?) -> Unit): CameraManager {
@@ -23,7 +24,7 @@ actual fun rememberCameraManager(onResult: (SharedImage?) -> Unit): CameraManage
             if (success) {
                 onResult.invoke(
                     SharedImage(
-                        BitmapUtils.getBitmapFromUri(
+                        UriUtils.getBitmapFromUri(
                             tempPhotoUri,
                             contentResolver
                         )

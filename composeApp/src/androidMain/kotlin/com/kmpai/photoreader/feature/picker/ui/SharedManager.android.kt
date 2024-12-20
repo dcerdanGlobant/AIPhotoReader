@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
+import com.kmpai.photoreader.core.ui.utils.UriUtils
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 
 @Composable
@@ -14,7 +15,7 @@ actual fun rememberSharedManager(onResult: (SharedImage?) -> Unit) {
     ImageUriProviderSingleton.provider.imageUrl?.let {
         onResult.invoke(
             SharedImage(
-                BitmapUtils.getBitmapFromUri(
+                UriUtils.getBitmapFromUri(
                     it.toUri(),
                     contentResolver
                 )
