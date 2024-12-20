@@ -168,6 +168,7 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
     reports {
         xml.required = true
         csv.required = true
-        html.required = true
+        html .required = true
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco")
     }
 }
