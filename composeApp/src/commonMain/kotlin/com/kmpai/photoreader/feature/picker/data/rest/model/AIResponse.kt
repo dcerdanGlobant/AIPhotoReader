@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ImageResponse (
+data class AIResponse (
     val id: String,
     val choices: List<Choice>,
     val created: Long,
@@ -21,7 +21,7 @@ data class Choice (
     @SerialName("finish_reason")
     val finishReason: String,
     val index: Long,
-    val message: Message
+    val message: APIMessage
 )
 
 @Serializable

@@ -17,9 +17,11 @@ import com.kmpai.photoreader.core.ui.AppTopBar
 import com.kmpai.photoreader.core.ui.TopBarConfig
 import com.kmpai.photoreader.feature.picker.ui.addPickerNavGraph
 import com.kmpai.photoreader.feature.picker.ui.pickerNavConfig
+import com.kmpai.photoreader.feature.picker.ui.screens.home.PickerViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ScreenNavigator() {
+fun ScreenNavigator(viewModel: PickerViewModel = koinViewModel<PickerViewModel>()) {
     val navController: NavHostController = rememberNavController()
     var topBarConfig by remember { mutableStateOf(TopBarConfig()) }
 
@@ -37,7 +39,7 @@ fun ScreenNavigator() {
                 startDestination = pickerNavConfig.route,
                 modifier = Modifier.fillMaxSize(),
             ) {
-                addPickerNavGraph(navController) { topBarConfig = it }
+                addPickerNavGraph(navController, viewModel) { topBarConfig = it }
             }
         }
     }

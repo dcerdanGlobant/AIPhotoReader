@@ -31,7 +31,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PickerHomeScreen (
+fun PickerHomeScreen(
     viewModel: PickerViewModel = koinViewModel<PickerViewModel>(),
     onOpenChat: () -> Unit,
 ) {
@@ -100,9 +100,10 @@ fun PickerHomeScreen (
         }
 
         PickerHomeState.LaunchSettings -> permissionsManager.launchSettings()
-        PickerHomeState.PickPicture ->  {
-            PickView() { viewModel.showImageSourceOptionDialog()}
+        PickerHomeState.PickPicture -> {
+            PickView() { viewModel.showImageSourceOptionDialog() }
         }
+
         is PickerHomeState.PickedPicture -> {
             val pickedState = homeState as PickerHomeState.PickedPicture
             PickerHomeView(
@@ -110,7 +111,7 @@ fun PickerHomeScreen (
                 isLoading = pickedState.isLoading,
                 description = pickedState.description,
                 openDialog = { viewModel.showImageSourceOptionDialog() },
-                openChat = {onOpenChat.invoke() }
+                openChat = { onOpenChat.invoke() }
 
             )
         }
