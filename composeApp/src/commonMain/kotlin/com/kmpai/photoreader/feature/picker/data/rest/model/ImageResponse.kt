@@ -25,6 +25,12 @@ data class Choice (
 )
 
 @Serializable
+data class Message (
+    val role: String,
+    val content: String
+)
+
+@Serializable
 data class Usage (
     @SerialName("completion_tokens")
     val completionTokens: Long,
