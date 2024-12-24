@@ -33,8 +33,6 @@ class PickerViewModel(
     private var contentDescription: String = ""
 
     init {
-        println("PickerViewModel created")
-
         if (!imageUri.isNullOrEmpty()) {
             viewModelScope.launch {
                 _homeState.emit(
