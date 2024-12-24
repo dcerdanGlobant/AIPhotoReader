@@ -1,6 +1,5 @@
-package com.kmpai.photoreader.feature.picker.data
+package com.kmpai.photoreader.feature.picker.data.datasource
 
-import com.kmpai.photoreader.feature.picker.data.datasource.PickerAPIDatasourceImpl
 import com.kmpai.photoreader.feature.picker.data.rest.RestApi
 import com.kmpai.photoreader.feature.picker.data.rest.SecretsUtils
 import com.kmpai.photoreader.feature.picker.data.rest.model.ImageResponseBuilder
