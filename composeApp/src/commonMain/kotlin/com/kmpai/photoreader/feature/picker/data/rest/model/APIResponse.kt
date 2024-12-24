@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AIResponse (
+data class APIResponse (
     val id: String,
     val choices: List<Choice>,
     val created: Long,

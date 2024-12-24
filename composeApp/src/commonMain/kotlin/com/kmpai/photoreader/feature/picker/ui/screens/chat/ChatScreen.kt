@@ -1,10 +1,8 @@
 package com.kmpai.photoreader.feature.picker.ui.screens.chat
 
 import aiphotoreader.composeapp.generated.resources.Res
-import aiphotoreader.composeapp.generated.resources.compose_multiplatform
 import aiphotoreader.composeapp.generated.resources.globant_logo_short
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,30 +29,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.kmpai.photoreader.feature.picker.ui.screens.home.PickerViewModel
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.Surface
 import androidx.compose.ui.text.style.TextAlign
-import com.kmpai.photoreader.feature.picker.domain.model.Message
-import com.kmpai.photoreader.feature.picker.domain.model.Role
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -102,7 +93,7 @@ fun ChatContent(chatState: ChatState, onSendMessage: (String) -> Unit = {}, onRe
             ConversationsList(
                 chatState = chatState,
                 modifier = Modifier.weight(1f),
-                onResendMessage = onResendMessage
+                onResendClicked = onResendMessage
             )
             ChatInputArea(onSendMessage = onSendMessage)
         }
@@ -110,47 +101,85 @@ fun ChatContent(chatState: ChatState, onSendMessage: (String) -> Unit = {}, onRe
 }
 
 @Composable
-private fun ConversationsList(chatState: ChatState, modifier: Modifier, onResendMessage: () -> Unit) {
-    val messages = chatState.conversation?.messages ?: emptyList();
+private fun ConversationsList(chatState: ChatState, modifier: Modifier, onResendClicked: () -> Unit) {
+    val messages = chatState.conversation?.messages ?: emptyList()
     LazyColumn(modifier = modifier.padding(top = 16.dp)) {
         items(messages) { message ->
-            val isMessageFromAI = message.role == Role.ASSISTANT
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.End
             ) {
-                val islastMessage = message.equals(messages.last());
-                if (isMessageFromAI) {
-                    Icon(
-                        painter = painterResource(Res.drawable.globant_logo_short),
-                        contentDescription = "AI Icon",
-                        modifier = Modifier.size(48.dp).padding(end = 8.dp)
-                    )
-                }
-                if (islastMessage && !isMessageFromAI && chatState.isError) {
-                    Text(
-                        color = Color.Red,
-                        text = message.content,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Right
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = "Error Icon",
-                        modifier = Modifier.size(48.dp).padding(end = 8.dp)
-                            .clickable(onClick = { onResendMessage() })
-                    )
+                if (message.isFromAssistant) {
+                    AIMessage(message.content, Modifier.weight(1f).padding(end = 48.dp))
                 } else {
-                    Text(
-                        text = message.content,
-                        modifier = Modifier.weight(1f),
-                        textAlign = if (isMessageFromAI) TextAlign.Left else TextAlign.Right
-                    )
+                    val islastMessage = message == messages.last()
+                    if (islastMessage && chatState.isError) {
+                        HumanMessageWithError(message.content, Modifier.padding(start = 48.dp), onResendClicked)
+                    } else {
+                        HumanMessage(message.content, Modifier.padding(start = 48.dp))
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun AIMessage(message: String, modifier: Modifier) {
+    Icon(
+        painter = painterResource(Res.drawable.globant_logo_short),
+        contentDescription = "AI Icon",
+        modifier = Modifier.size(48.dp).padding(end = 8.dp)
+    )
+    Text(
+        text = message,
+        modifier = modifier,
+        textAlign = TextAlign.Left
+    )
+}
+
+@Composable
+private fun HumanMessageWithError(message: String, modifier: Modifier, onResendClicked: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = Color(0x50CCCCCC),
+        modifier = modifier
+            .padding(8.dp)
+            .wrapContentSize(Alignment.TopEnd).clickable(onClick = { onResendClicked() })
+    ) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                color = Color.Red,
+                text = message,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+            Icon(
+                imageVector = Icons.Filled.Refresh,
+                tint = Color.Red,
+                contentDescription = "Resend message Icon",
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun HumanMessage(message: String, modifier: Modifier) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = Color(0x50CCCCCC),
+        modifier = modifier
+            .padding(8.dp)
+            .wrapContentSize(Alignment.TopEnd)
+    ) {
+        Text(
+            text = message,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+
 }
 
 @Composable

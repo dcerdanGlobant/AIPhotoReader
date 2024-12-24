@@ -1,7 +1,7 @@
 package com.kmpai.photoreader.feature.picker.data.rest
 
-import com.kmpai.photoreader.feature.picker.data.rest.model.AIRequest
-import com.kmpai.photoreader.feature.picker.data.rest.model.AIResponse
+import com.kmpai.photoreader.feature.picker.data.rest.model.APIRequest
+import com.kmpai.photoreader.feature.picker.data.rest.model.APIResponse
 import com.kmpai.photoreader.feature.picker.data.rest.model.APIMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -75,7 +75,7 @@ class RestApi(private val client: HttpClient) {
         throw Exception("ImageUploadError: status: ${response.status}")
     }
 
-    suspend fun sendMessagesToAI(messages: List<APIMessage>): AIResponse {
+    suspend fun sendMessagesToAI(messages: List<APIMessage>): APIResponse {
 
         val apiKey = SecretsUtils.getGlobantApiKey()
 
@@ -87,13 +87,13 @@ class RestApi(private val client: HttpClient) {
             setBody(createAIRequest(messages))
         }
         if (response.status == HttpStatusCode.OK) {
-            return response.body<AIResponse>()
+            return response.body<APIResponse>()
         }
         throw Exception("ImageAnalysisError: status: ${response.status}")
     }
 
-    private fun createAIRequest(messages: List<APIMessage>) : AIRequest {
-        return AIRequest(
+    private fun createAIRequest(messages: List<APIMessage>) : APIRequest {
+        return APIRequest(
             model = ASSISTANT,
             messages = messages,
             revision = REVISION,
