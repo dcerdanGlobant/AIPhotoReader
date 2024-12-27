@@ -15,6 +15,7 @@ compose-multiplatform = "1.7.0"
 junit = "4.13.2"
 kotlin = "2.0.21"
 dateTimeVersion = "0.6.0"
+kover = "0.9.0"
 
 #permissions
 accompanist-permissions = "0.32.0"
@@ -104,3 +105,4 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-mu
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kover = {id = 'org.jetbrains.kotlinx.kover', version.ref = "kover"}

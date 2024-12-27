@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -129,6 +130,21 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+kover.reports {
+    filters {
+        excludes.classes("kotlin/com/kmpai/photoreader/feature/permission/*")
+        includes.classes("kotlin/com/kmpai/photoreader/feature/picker/*")
+    }
+
+    verify {
+        rule {
+            bound {
+                minValue.set(50)
+                maxValue.set(75)
+            }
+        }
     }
 }
 
