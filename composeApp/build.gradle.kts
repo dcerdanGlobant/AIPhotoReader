@@ -141,6 +141,22 @@ android {
     }
 }
 
+kover {
+    reports {
+        filters {
+            excludes {
+                // exclusion rules - classes to exclude from report
+                classes(
+                    "com.kmpai.photoreader.core.*",
+                    "com.kmpai.photoreader.feature.permission.*",
+                    "com.kmpai.photoreader.feature.picker.ui.*",
+                    "core.ui.theme", //It no works
+                    "aiphotoreader.composeapp.generated.*",
+                    "com.kmpai.photoreader.di") //It no works
+            }
+        }
+    }
+}
 
 dependencies {
     debugImplementation(compose.uiTooling)
