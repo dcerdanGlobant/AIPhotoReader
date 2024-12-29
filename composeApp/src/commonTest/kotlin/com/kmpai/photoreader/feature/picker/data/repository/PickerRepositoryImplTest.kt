@@ -48,4 +48,21 @@ class PickerRepositoryImplTest {
             datasource.sendImageAndStartConversation(any(), any())
         }
     }
+
+    @Test
+    fun `sendConversation should return successful result with conversation`() = runBlocking {
+        val datasource = mock<PickerDatasource>()
+        val repository = PickerRepositoryImpl(datasource)
+        val resultConversation = Result.success(Conversation(messages = emptyList(),""))
+
+        everySuspend { datasource.sendConversation(any()) } returns resultConversation
+
+        val result = repository.sendConversation(Conversation(messages = emptyList(),""))
+
+        assertTrue(result.isSuccess)
+        assertEquals(resultConversation, result)
+        verifySuspend (atMost(1)) { //Call expected
+            datasource.sendConversation(any())
+        }
+    }
 }
