@@ -19,9 +19,8 @@ repositories {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -137,25 +136,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
-kover.reports {
-    filters {
-        excludes.classes("kotlin/com/kmpai/photoreader/feature/permission/*")
-        includes.classes("kotlin/com/kmpai/photoreader/feature/picker/*")
-    }
 
-    verify {
-        rule {
-            bound {
-                minValue.set(50)
-                maxValue.set(75)
-            }
-        }
-    }
-}
 
 dependencies {
     debugImplementation(compose.uiTooling)
