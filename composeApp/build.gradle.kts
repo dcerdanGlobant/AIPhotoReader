@@ -96,8 +96,9 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.junit)
-            implementation(libs.assertk)
+            implementation(libs.turbine)
         }
 
         iosMain.dependencies {
@@ -149,7 +150,6 @@ kover {
                 classes(
                     "com.kmpai.photoreader.core.*",
                     "com.kmpai.photoreader.feature.permission.*",
-                    "com.kmpai.photoreader.feature.picker.ui.*",
                     "core.ui.theme", //It no works
                     "aiphotoreader.composeapp.generated.*",
                     "com.kmpai.photoreader.di") //It no works
