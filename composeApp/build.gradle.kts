@@ -150,9 +150,9 @@ kover {
                 classes(
                     "com.kmpai.photoreader.core.*",
                     "com.kmpai.photoreader.feature.permission.*",
-                    "core.ui.theme", //It no works
+                    "core.ui.*",
                     "aiphotoreader.composeapp.generated.*",
-                    "com.kmpai.photoreader.di") //It no works
+                    "com.kmpai.photoreader.di.*")
             }
         }
     }
