@@ -7,6 +7,7 @@ import com.kmpai.photoreader.feature.picker.data.rest.RestApi
 import com.kmpai.photoreader.feature.picker.data.datasource.PickerDatasource
 import com.kmpai.photoreader.feature.picker.domain.repository.PickerRepository
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
+import com.kmpai.photoreader.feature.picker.domain.usecase.SendConversation
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -20,5 +21,5 @@ val pickerModule =
         singleOf(::PickerAPIDatasourceImpl).bind<PickerDatasource>()
         singleOf(::PickerRepositoryImpl).bind<PickerRepository>()
         singleOf(::GetPictureDescription)
+        singleOf(::SendConversation)
     }
-

@@ -4,18 +4,21 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
+import com.kmpai.photoreader.feature.picker.domain.model.Conversation
+import com.kmpai.photoreader.feature.picker.domain.model.Message
 import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
+import com.kmpai.photoreader.feature.picker.domain.model.Role
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
+import com.kmpai.photoreader.feature.picker.domain.usecase.SendConversation
 import com.kmpai.photoreader.feature.picker.ui.screens.chat.ChatState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-@OptIn(ExperimentalEncodingApi::class)
 class PickerViewModel(
-    private val getPictureDescription: GetPictureDescription
+    private val getPictureDescription: GetPictureDescription,
+    private val sendConversation: SendConversation
 ) : ViewModel() {
     private val _homeState: MutableStateFlow<PickerHomeState> =
         MutableStateFlow(PickerHomeState.PickPicture)
@@ -24,8 +27,8 @@ class PickerViewModel(
     private val _chatState: MutableStateFlow<ChatState> =
         MutableStateFlow(ChatState())
     val chatState: StateFlow<ChatState> get() = _chatState.asStateFlow()
-    
-    val imageUri = ImageUriProviderSingleton.provider.imageUrl
+
+    private val imageUri = ImageUriProviderSingleton.provider.imageUrl
     private var picture: ImageBitmap? = null
     private var contentDescription: String = ""
 
@@ -50,11 +53,19 @@ class PickerViewModel(
             )
             getPictureDescription.invoke(requestedPicture.byteArray, requestedPicture.extension)
                 .onSuccess {
-                    contentDescription = it.contentDescription ?: ""
+                    contentDescription = it.messages[0].content
                     _homeState.emit(
                         PickerHomeState.PickedPicture(
                             isLoading = false,
-                            picture = requestedPicture.bitmap, it.contentDescription
+                            picture = requestedPicture.bitmap,
+                            description = it.messages[0].content
+                        )
+                    )
+                    _chatState.emit(
+                        ChatState(
+                            isLoading = false,
+                            picture = requestedPicture.bitmap,
+                            conversation = it
                         )
                     )
                 }
@@ -68,6 +79,55 @@ class PickerViewModel(
                 }
         }
     }
+
+    fun sendAnotherMessage(message: String) {
+        chatState.value.conversation?.let { oldConversation ->
+            val messages = mutableListOf<Message>()
+            messages.addAll(oldConversation.messages)
+            messages.add(Message(Role.USER, message))
+            val newConversation = Conversation(messages, oldConversation.filename)
+            sendConversation(newConversation)
+        }
+    }
+
+    fun resendLastMessage() {
+        chatState.value.conversation?.let { oldConversation ->
+            val messages = mutableListOf<Message>()
+            messages.addAll(oldConversation.messages)
+            val conversation = Conversation(messages, oldConversation.filename)
+            sendConversation(conversation)
+        }
+    }
+
+    private fun sendConversation(newConversation: Conversation) =
+        viewModelScope.launch {
+            _chatState.emit(
+                ChatState(
+                    isLoading = true,
+                    picture = chatState.value.picture,
+                    conversation = newConversation
+                )
+            )
+            sendConversation.invoke(conversation = newConversation).onSuccess { conversationFromApi ->
+                _chatState.emit(
+                    ChatState(
+                        isLoading = false,
+                        picture = chatState.value.picture,
+                        conversation = conversationFromApi
+                    )
+                )
+            }.onFailure {
+                _chatState.emit(
+                    ChatState(
+                        isLoading = false,
+                        isError = true,
+                        picture = chatState.value.picture,
+                        conversation = newConversation
+                    )
+                )
+            }
+        }
+
 
     fun launchGallery() {
         viewModelScope.launch {

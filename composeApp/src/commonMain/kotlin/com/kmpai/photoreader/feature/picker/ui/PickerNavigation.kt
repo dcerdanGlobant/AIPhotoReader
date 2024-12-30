@@ -12,6 +12,7 @@ import com.kmpai.photoreader.core.navigation.ScreenNavigatorConfig
 import com.kmpai.photoreader.core.ui.TopBarConfig
 import com.kmpai.photoreader.feature.picker.ui.screens.chat.ChatScreen
 import com.kmpai.photoreader.feature.picker.ui.screens.home.PickerHomeScreen
+import com.kmpai.photoreader.feature.picker.ui.screens.home.PickerViewModel
 
 val pickerNavConfig = ScreenNavigatorConfig(
     route = "picker",
@@ -30,20 +31,20 @@ private val chatIANavConfig = ScreenNavigatorConfig(
 
 fun NavGraphBuilder.addPickerNavGraph(
     navController: NavController,
-    onTopBarConfig: ((topBarConfig: TopBarConfig) -> Unit),
+    viewModel: PickerViewModel,
+    onTopBarConfig: ((topBarConfig: TopBarConfig) -> Unit)
 ) {
 
     navigation(startDestination = homePickerNavConfig.route, route = pickerNavConfig.route) {
         composable(route = homePickerNavConfig.route) {
             onTopBarConfig.invoke(homePickerNavConfig.toTopBarConfig())
-            PickerHomeScreen(
+            PickerHomeScreen(viewModel,
                 onOpenChat = { navController.navigate(route = chatIANavConfig.route)})
         }
 
         composable(route = chatIANavConfig.route) {
             onTopBarConfig.invoke(chatIANavConfig.toTopBarConfig())
-            ChatScreen(
-            )
+            ChatScreen(viewModel)
         }
     }
 }

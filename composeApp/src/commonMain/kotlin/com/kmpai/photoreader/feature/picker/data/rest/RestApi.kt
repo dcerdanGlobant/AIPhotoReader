@@ -1,8 +1,8 @@
 package com.kmpai.photoreader.feature.picker.data.rest
 
-import com.kmpai.photoreader.feature.picker.data.rest.model.ImageRequest
-import com.kmpai.photoreader.feature.picker.data.rest.model.ImageResponse
-import com.kmpai.photoreader.feature.picker.data.rest.model.Message
+import com.kmpai.photoreader.feature.picker.data.rest.model.APIRequest
+import com.kmpai.photoreader.feature.picker.data.rest.model.APIResponse
+import com.kmpai.photoreader.feature.picker.data.rest.model.APIMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -31,7 +31,6 @@ class RestApi(private val client: HttpClient) {
         private const val ACCEPT_HEADER_VALUE = "application/json"
 
         private const val ASSISTANT = "saia:assistant:ImageAssistant"
-        private const val ROLE = "user"
         private const val REVISION = 1L
         private const val REVISION_NAME = "1"
     }
@@ -76,7 +75,7 @@ class RestApi(private val client: HttpClient) {
         throw Exception("ImageUploadError: status: ${response.status}")
     }
 
-    suspend fun requestImageDescription(imageName: String): ImageResponse {
+    suspend fun sendMessagesToAI(messages: List<APIMessage>): APIResponse {
 
         val apiKey = SecretsUtils.getGlobantApiKey()
 
@@ -85,18 +84,18 @@ class RestApi(private val client: HttpClient) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer $apiKey")
             }
-            setBody(createImageRequest(imageName))
+            setBody(createAIRequest(messages))
         }
         if (response.status == HttpStatusCode.OK) {
-            return response.body<ImageResponse>()
+            return response.body<APIResponse>()
         }
         throw Exception("ImageAnalysisError: status: ${response.status}")
     }
 
-    private fun createImageRequest(fileName: String) : ImageRequest {
-        return ImageRequest(
+    private fun createAIRequest(messages: List<APIMessage>) : APIRequest {
+        return APIRequest(
             model = ASSISTANT,
-            messages = listOf(Message(ROLE, "Analyse an image {file: $fileName}")),
+            messages = messages,
             revision = REVISION,
             revisionName = REVISION_NAME,
         )
