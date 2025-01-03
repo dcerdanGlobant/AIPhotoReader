@@ -1,18 +1,16 @@
 package com.kmpai.photoreader.feature.picker.data.datasource
 
-import com.kmpai.photoreader.feature.picker.data.rest.RestApi
-import com.kmpai.photoreader.feature.picker.data.rest.SecretsUtils
+import com.kmpai.photoreader.feature.picker.data.rest.RestApiInterface
 import com.kmpai.photoreader.feature.picker.data.rest.model.ApiResponseBuilder
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
+import com.kmpai.photoreader.feature.picker.domain.model.Message
+import com.kmpai.photoreader.feature.picker.domain.model.Role
 import dev.mokkery.answering.returns
-import dev.mokkery.answering.throws
-import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
-import dev.mokkery.verify
+import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.atMost
 import dev.mokkery.verifySuspend
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,81 +18,77 @@ import kotlin.test.assertTrue
 
 class PickerAPIDatasourceImplTest {
 
-    /*@Test
+    @Test
     fun `sendImageAndStartConversation should successfully get a conversation`() = runBlocking {
-
-        val httpClient = HttpClient()
-        val restApi = RestApi(httpClient)
+        val restApi = mock<RestApiInterface>()
         val datasource = PickerAPIDatasourceImpl(restApi)
-        val serverImageName = "uploaded_image.jpg"
-        val apiResponse = ApiResponseBuilder().build()
-
-        everySuspend { restApi.uploadImage(any(), any(), any()) } returns serverImageName
-        everySuspend { restApi.sendMessagesToAI(any()) } returns apiResponse
-        every { SecretsUtils.getGlobantApiKey() } returns "globantAPIKey"
+        everySuspend { restApi.uploadImage(image = any(), filename = any(), contentType = any()) } returns "uploaded_image.jpg"
+        everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
         val result = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
-
         assertTrue(result.isSuccess)
-        assertEquals(
+        assertEquals(expected =
             Result.success(
                 Conversation(
-                    messages = emptyList(),
+                    messages = listOf(Message(role = Role.ASSISTANT, content = "ContentBuilder")),
                     filename = "uploaded_image.jpg"
                 )
-            ), result
+            ), actual = result
         )
 
         verifySuspend(atMost(1)) { //Call expected
-            restApi.uploadImage(any(), any(), any())
+            restApi.uploadImage(any(), any(),any())
             restApi.sendMessagesToAI(any())
         }
-        verify {
-            SecretsUtils.getGlobantApiKey()
-        }
     }
 
     @Test
-    fun `should return failure when uploadImage fails`() = runBlocking {
-        val httpClient = HttpClient()
-        val restApi = RestApi(httpClient)
+    fun `sendImageAndStartConversation should return failure when uploadImage fails`() = runBlocking {
+        val restApi = mock<RestApiInterface>()
         val datasource = PickerAPIDatasourceImpl(restApi)
+        // NOT MOCKED and go to Failure everySuspend { restApi.uploadImage(image = any(), filename = any(), contentType = any()) } returns "uploaded_image.jpg"
 
-        every { SecretsUtils.getGlobantApiKey() } returns "globantAPIKey"
-        everySuspend {
-            restApi.uploadImage(
-                any(),
-                any(),
-                any()
+        val result = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
+        assertTrue(result.isFailure)
+
+        verifySuspend(atMost(1)) { //Call expected
+            restApi.uploadImage(any(), any(),any())
+        }
+        }
+
+    @Test
+    fun `sendConversation should successfully get a conversation`() = runBlocking {
+        val restApi = mock<RestApiInterface>()
+        val datasource = PickerAPIDatasourceImpl(restApi)
+        everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
+
+        val result = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
+        assertTrue(result.isSuccess)
+        assertEquals(expected =
+        Result.success(
+            Conversation(
+                messages = listOf(Message(role = Role.ASSISTANT, content = "ContentBuilder")), //Because ApiResponseBuilder().build()
+                filename = "uploaded_image.jpg"
             )
-        } throws RuntimeException("Upload failed")
+        ), actual = result
+        )
 
-        val result = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
-
-        assertTrue(result.isFailure)
         verifySuspend(atMost(1)) { //Call expected
-            restApi.uploadImage(any(), any(), any())
-            SecretsUtils.getGlobantApiKey()
+            restApi.sendMessagesToAI(any())
         }
     }
 
     @Test
-    fun `should return failure when requestImageDescription fails`() = runBlocking {
-        val httpClient = HttpClient()
-        val restApi = RestApi(httpClient)
+    fun `sendConversation should return failure when call fails`() = runBlocking {
+        val restApi = mock<RestApiInterface>()
         val datasource = PickerAPIDatasourceImpl(restApi)
-        val serverImageName = "uploaded_image.jpg"
+        //NOT MOCKED and go to Failure everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
-        every { SecretsUtils.getGlobantApiKey() } returns "globantAPIKey"
-        everySuspend { restApi.uploadImage(any(), any(), any()) } returns serverImageName
-        everySuspend { restApi.sendMessagesToAI(any()) } throws RuntimeException("Description request failed")
-
-        val result = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
-
+        val result = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
         assertTrue(result.isFailure)
+
         verifySuspend(atMost(1)) { //Call expected
-            restApi.uploadImage(any(), any(), any())
-            SecretsUtils.getGlobantApiKey()
+            restApi.sendMessagesToAI(any())
         }
-    }*/
+    }
 }

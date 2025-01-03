@@ -1,6 +1,6 @@
 package com.kmpai.photoreader.feature.picker.data.datasource
 
-import com.kmpai.photoreader.feature.picker.data.rest.RestApi
+import com.kmpai.photoreader.feature.picker.data.rest.RestApiInterface
 import com.kmpai.photoreader.feature.picker.data.rest.mappers.toAPIMessages
 import com.kmpai.photoreader.feature.picker.data.rest.mappers.appendConversation
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
@@ -8,7 +8,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class PickerAPIDatasourceImpl(
-    private val restApi: RestApi,
+    private val restApi: RestApiInterface,
 ) : PickerDatasource {
 
     @OptIn(ExperimentalUuidApi::class)
