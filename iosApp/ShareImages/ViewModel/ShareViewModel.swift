@@ -8,6 +8,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import ComposeApp
 
 // MARK: - ShareViewModel
 final class ShareViewModel: ObservableObject {
@@ -15,6 +16,10 @@ final class ShareViewModel: ObservableObject {
     
     @Published var image = UIImage()
     @Published var description: String?
+    
+    private lazy var useCase: GetPictureDescription = {
+        UseCasesProvider().getPictureDescriptionUseCase()
+    }()
     
     init(with info: ShareViewInfo) {
         self.info = info
@@ -47,15 +52,38 @@ private extension ShareViewModel {
             let height = width * aspectRatio
             let size = CGSize(width: width, height: height)
             guard let preview = image.preparingThumbnail(of: size) else { return }
-            self.image = preview
+            self.image = image
         }
     }
     
     func loadDescription() {
         description = nil
-        // TODO: Do API call
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        
+        guard let image = convertUIImageToByteArray(image: image) else {
+            description = "No image"
+            return
+        }
+        useCase.invoke(image: image, extension: "jpeg") { [weak self] result, error in
+            guard let string = result as? String else {
+                self?.description = "No data"
+                return
+            }
+            self?.description = string
         }
     }
+    
+    func convertUIImageToByteArray(image: UIImage) -> KotlinByteArray? {
+        var imageData: Data?
+        imageData = image.jpegData(compressionQuality: 0.5)
+        
+        guard let data = imageData else { return nil }
+
+        
+        let kotlinByteArray = KotlinByteArray(size: Int32(data.count))
+        for (index, byte) in data.enumerated() {
+            kotlinByteArray.set(index: Int32(index), value: Int8(bitPattern: byte))
+        }
+        
+        return kotlinByteArray
+    }    
 }
