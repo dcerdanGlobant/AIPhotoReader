@@ -1,3 +1,5 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
 package com.kmpai.photoreader.feature.permission
 
 import android.Manifest
@@ -22,11 +24,10 @@ actual fun createPermissionsManager(callback: PermissionCallback): PermissionsMa
     return remember { PermissionsManager(callback) }
 }
 
-actual class PermissionsManager actual constructor(private val callback: PermissionCallback) :
-    PermissionHandler {
+actual class PermissionsManager actual constructor(private val callback: PermissionCallback) {
     @OptIn(ExperimentalPermissionsApi::class)
     @Composable
-    override fun askPermission(permission: PermissionType) {
+    actual fun askPermission(permission: PermissionType) {
 
         val lifecycleOwner = LocalLifecycleOwner.current
         when (permission) {
@@ -61,7 +62,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
 
     @OptIn(ExperimentalPermissionsApi::class)
     @Composable
-    override fun isPermissionGranted(permission: PermissionType): Boolean {
+    actual fun isPermissionGranted(permission: PermissionType): Boolean {
         return when (permission) {
             PermissionType.CAMERA -> {
                 val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
@@ -77,7 +78,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
     }
 
     @Composable
-    override fun launchSettings() {
+    actual fun launchSettings() {
         val context = LocalContext.current
         val intent = Intent(
             ACTION_APPLICATION_DETAILS_SETTINGS,
