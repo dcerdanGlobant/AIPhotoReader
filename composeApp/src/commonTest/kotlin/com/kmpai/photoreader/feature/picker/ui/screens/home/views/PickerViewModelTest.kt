@@ -2,10 +2,12 @@
 
 package com.kmpai.photoreader.feature.picker.ui.screens.home.views
 
+import androidx.compose.ui.graphics.ImageBitmap
 import app.cash.turbine.test
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
 import com.kmpai.photoreader.feature.picker.domain.model.Message
+import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
 import com.kmpai.photoreader.feature.picker.domain.model.Role
 import com.kmpai.photoreader.feature.picker.domain.repository.PickerRepository
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
@@ -16,6 +18,7 @@ import com.kmpai.photoreader.feature.picker.ui.screens.home.PickerViewModel
 import dev.mokkery.MockMode
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
+import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
@@ -48,7 +51,6 @@ class PickerViewModelTest {
         Dispatchers.setMain(testDispatcher)
         getPictureDescription = GetPictureDescription(repository)
         sendConversation = SendConversation(repository)
-        viewModel = PickerViewModel(getPictureDescription, sendConversation)
     }
 
     @AfterTest
@@ -57,45 +59,47 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `resendLastMessage emit ChatState and update the older conversation`() = runTest {
+    fun `init should emit SharedPicture state if imageUri is not empty`() = runTest {
         //Given
-        //everySuspend { viewModel.chatState.value } returns ChatState(conversation = Conversation(messages = listOf(Message(role = Role.USER, content = "LastMessage")), filename = "fileName.jpg"))
-
-        viewModel.resendLastMessage()
+        ImageUriProviderSingleton.provider.setImageUri("MyUriTest")
+        //When
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
 
         //Then
-        /*viewModel.chatState.test {
+        viewModel.homeState.test {
             val state = awaitItem()
-            assertEquals(expected = Conversation(messages = listOf(Message(role = Role.USER, content = "LastMessage")), filename = "fileName.jpg"), actual = state.conversation)
-            val stateUpdatedFromServer = awaitItem() //Mock is empty
-            assertEquals(expected = Conversation(emptyList(),""), actual = stateUpdatedFromServer.conversation)
+            assertEquals(expected = PickerHomeState.SharedPicture, actual = state)
             cancelAndConsumeRemainingEvents()
         }
         verifySuspend(VerifyMode.exactly(0)) { getPictureDescription.invoke(any(), any()) } //Not rule
-        verifySuspend(VerifyMode.exactly(1)) { sendConversation.invoke(any()) } //Not rule*/
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
+    }
+
+    @Test
+    fun `sendAnotherMessage should emit three states`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+        //When
+        //viewModel.getPictureData(RequestedPicture(byteArray = ByteArray(1), bitmap = ImageBitmap(100,100)))
+        viewModel.sendAnotherMessage("Example")
+
+        //Then
+        viewModel.chatState.test {
+           val state = awaitItem()
+            assertEquals(expected = ChatState(isLoading = true), actual = state)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
     }
 
 
 
     //region Emit functions
     @Test
-    fun `init should emit SharedPicture state if imageUri is not empty`() = runTest {
-
-        //everySuspend { ImageUriProviderSingleton.provider.imageUrl } returns "someUri"
-
-        //Then after init
-        viewModel.homeState.test {
-            val state = awaitItem()
-            assertEquals(expected = PickerHomeState.PickPicture, actual = state)
-            cancelAndConsumeRemainingEvents()
-        }
-        verifySuspend(VerifyMode.exactly(0)) { getPictureDescription.invoke(any(), any()) } //Not rule
-        verifySuspend(VerifyMode.exactly(1)) { sendConversation.invoke(any()) } //Not rule
-    }
-
-
-    @Test
     fun `launchGallery function emit launchGallery state`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)        //When
         //When
         viewModel.launchGallery()
         //Then
@@ -110,6 +114,8 @@ class PickerViewModelTest {
 
     @Test
     fun `launchCamera function emit launchCamera state`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)        //When
         //When
         viewModel.launchCamera()
         //Then
@@ -122,6 +128,8 @@ class PickerViewModelTest {
 
     @Test
     fun `launchSettings function emit launchSettings state`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
         //When
         viewModel.launchSettings()
         //Then
@@ -134,6 +142,8 @@ class PickerViewModelTest {
 
     @Test
     fun `showRationaleDialog function emit showRationaleDialog state`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)//When
         //When
         viewModel.showRationaleDialog()
         //Then
@@ -146,6 +156,8 @@ class PickerViewModelTest {
 
     @Test
     fun `showImageSourceOptionDialog function emit showImageSourceOptionDialog state`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)//When
         //When
         viewModel.showImageSourceOptionDialog()
         //Then
@@ -158,6 +170,8 @@ class PickerViewModelTest {
 
     @Test
     fun `showPickImage function emit showPickImage state`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)//When
         //When
         viewModel.showPickImage()
         //Then
