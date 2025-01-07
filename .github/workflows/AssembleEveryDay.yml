@@ -29,9 +29,10 @@ jobs:
 
       - name: Setup gradle
         uses: gradle/actions/setup-gradle@v3
-      - name: Filter warnings
-        run:  grep -v "expect/actual" build/logs/compile.log || true
-      
+
+      - name: Build project
+        run: ./gradlew build
+
       - name: Assemble apk
         run: ./gradlew assemble
 
