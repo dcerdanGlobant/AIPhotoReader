@@ -2,16 +2,8 @@ package com.kmpai.photoreader.feature.permission
 
 import androidx.compose.runtime.Composable
 
-expect class PermissionsManager(callback: PermissionCallback) : PermissionHandler
-
-interface PermissionCallback {
-    fun onPermissionStatus(permissionType: PermissionType, status: PermissionStatus)
-}
-
-@Composable
-expect fun createPermissionsManager(callback: PermissionCallback): PermissionsManager
-
-interface PermissionHandler {
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+expect class PermissionsManager(callback: PermissionCallback) {
     @Composable
     fun askPermission(permission: PermissionType)
 
@@ -21,6 +13,14 @@ interface PermissionHandler {
     @Composable
     fun launchSettings()
 }
+
+interface PermissionCallback {
+    fun onPermissionStatus(permissionType: PermissionType, status: PermissionStatus)
+}
+
+@Composable
+expect fun createPermissionsManager(callback: PermissionCallback): PermissionsManager
+
 
 enum class PermissionType {
     GALLERY,
