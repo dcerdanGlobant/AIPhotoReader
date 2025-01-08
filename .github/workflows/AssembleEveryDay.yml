@@ -30,11 +30,8 @@ jobs:
       - name: Setup gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Bump version
-        uses: chkfung/android-version-actions@v1.2.2
-        with:
-          gradlePath: app/build.gradle.kts
-          versionCode: ${{github.run_number}}
+      - name: Build project
+        run: ./gradlew build
 
       - name: Assemble apk
         run: ./gradlew assemble
@@ -43,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Release apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: composeApp/build/outputs/apk/debug/composeApp-debug.apk

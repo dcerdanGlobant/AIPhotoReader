@@ -24,9 +24,10 @@ actual fun createPermissionsManager(callback: PermissionCallback): PermissionsMa
     return PermissionsManager(callback)
 }
 
-actual class PermissionsManager actual constructor(private val callback: PermissionCallback) : PermissionHandler {
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+actual class PermissionsManager actual constructor(private val callback: PermissionCallback) {
     @Composable
-    override fun askPermission(permission: PermissionType) {
+    actual fun askPermission(permission: PermissionType) {
         when (permission) {
             PermissionType.GALLERY -> {
                 val status = remember { PHPhotoLibrary.authorizationStatus() }
@@ -79,7 +80,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
 
 
     @Composable
-    override fun isPermissionGranted(permission: PermissionType): Boolean {
+    actual fun isPermissionGranted(permission: PermissionType): Boolean {
         return when (permission) {
             PermissionType.GALLERY -> PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
             PermissionType.CAMERA -> AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) == AVAuthorizationStatusAuthorized
@@ -87,7 +88,7 @@ actual class PermissionsManager actual constructor(private val callback: Permiss
     }
 
     @Composable
-    override fun launchSettings() {
+    actual fun launchSettings() {
         val url = NSURL.URLWithString(UIApplicationOpenSettingsURLString)
         UIApplication.sharedApplication.openURL(url!!)
     }
