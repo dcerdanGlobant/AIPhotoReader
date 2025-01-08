@@ -52,5 +52,6 @@ jobs:
       - name: Setup gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Unit test
-        run: ./gradlew test
+      - name: Kover report test
+        run: ./gradlew koverHtmlReport
+
