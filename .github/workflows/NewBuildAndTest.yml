@@ -54,4 +54,10 @@ jobs:
 
       - name: Kover report test
         run: ./gradlew koverHtmlReport
+     
+      - name: Report Kover index.html
+        uses: actions/upload-artifact@v4
+        with:
+          name: Report coverage
+          path: composeApp/build/reports/kover/html/index.html
 
