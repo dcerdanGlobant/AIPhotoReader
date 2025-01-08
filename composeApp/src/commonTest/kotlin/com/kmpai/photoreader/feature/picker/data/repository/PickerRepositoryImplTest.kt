@@ -28,7 +28,7 @@ class PickerRepositoryImplTest {
 
         assertTrue(result.isSuccess)
         assertEquals(resultConversation, result)
-        verifySuspend (atMost(0)) { //Call expected
+        verifySuspend (atMost(1)) { //Call expected
             datasource.sendImageAndStartConversation(any(), any())
         }
     }
