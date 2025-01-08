@@ -34,24 +34,6 @@ jobs:
       - name: Build project
         run: ./gradlew build
 
-  test: 
-    runs-on: ubuntu-latest
-
-    needs: ["build"]
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.5.0
-        with: 
-          java-version: 21
-          distribution: "temurin"
-          cache: gradle
-
-      - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Kover report test
         run: ./gradlew koverHtmlReport
      
@@ -59,5 +41,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Report coverage
-          path: composeApp/build/reports/kover/html/index.html
+          path: composeApp/build/reports/kover/html  
 
