@@ -4,6 +4,7 @@ package com.kmpai.photoreader.feature.picker.ui.screens.home.views
 
 import androidx.compose.ui.graphics.ImageBitmap
 import app.cash.turbine.test
+import coil3.Bitmap
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
 import com.kmpai.photoreader.feature.picker.domain.model.Message
@@ -75,13 +76,53 @@ class PickerViewModelTest {
         verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
     }
 
+    /*@Test
+    fun `getPictureData should emit two states when getPictureDescription return success`() = runTest {
+        //Given
+        val imageBitmap = mock<ImageBitmap>()
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+        everySuspend { getPictureDescription.invoke(image = ByteArray(1), extension = "jpg")} returns Result.success(Conversation(messages= listOf(), filename = "filename.jpg"))
+        //When
+        viewModel.getPictureData(RequestedPicture(ByteArray(1), bitmap = imageBitmap))
+
+        //Then
+        viewModel.chatState.test {
+            val state = awaitItem()
+            assertEquals(expected = ChatState(isLoading = false, picture = imageBitmap, conversation = Conversation(messages = listOf(), filename = "filename.jpg")), actual = state)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule
+    }*/
+
+
     @Test
-    fun `sendAnotherMessage should emit three states`() = runTest {
+    fun `getPictureData should emit zero states when getPictureDescription return failure`() = runTest {
+        //Given
+        val imageBitmap = mock<ImageBitmap>()
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+        //When
+        viewModel.getPictureData(RequestedPicture(ByteArray(1), bitmap = imageBitmap))
+
+        //Then
+        viewModel.homeState.test {
+            val state = awaitItem()
+            assertEquals(expected = PickerHomeState.PickedPicture(isLoading = false, picture = imageBitmap, description = "No data"), actual = state)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
+    }
+
+
+
+
+    @Test
+    fun `sendAnotherMessage should emit zero states when conversation is null`() = runTest {
         //Given
         viewModel = PickerViewModel(getPictureDescription, sendConversation)
         //When
-        //viewModel.getPictureData(RequestedPicture(byteArray = ByteArray(1), bitmap = ImageBitmap(100,100)))
-        viewModel.sendAnotherMessage("Example")
+        viewModel.sendAnotherMessage(conversation = null, message = "Example")
 
         //Then
         viewModel.chatState.test {
@@ -93,7 +134,77 @@ class PickerViewModelTest {
         verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
     }
 
+    @Test
+    fun `sendAnotherMessage should emit one state when sendConversation failure`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+        //When
+        viewModel.sendAnotherMessage(conversation = Conversation(messages = listOf(), filename = "filename.jpg"), message = "Example")
 
+        //Then
+        viewModel.chatState.test {
+            val state2 = awaitItem()
+            assertEquals(expected = ChatState(isLoading = false, isError = true,picture = null, conversation = Conversation(messages = listOf(Message(role = Role.USER, content = "Example")), filename = "filename.jpg")), actual = state2)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
+    }
+
+    /*@Test
+    fun `sendAnotherMessage should emit one state when sendConversation is success`() = runTest {
+        //Given
+        everySuspend { sendConversation.invoke(Conversation(messages = listOf(), filename = "filename.jpg"))} returns Result.success(
+            Conversation(messages = listOf(), filename = "filename.jpg")
+        )
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+
+        //When
+        viewModel.sendAnotherMessage(conversation = Conversation(messages = listOf(), filename = "filename.jpg"), message = "Example")
+
+        //Then
+        viewModel.chatState.test {
+            val state2 = awaitItem()
+            assertEquals(expected = ChatState(isLoading = false, isError = false,picture = null, conversation = Conversation(messages = listOf(Message(role = Role.USER, content = "Example")), filename = "filename.jpg")), actual = state2)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule
+    }*/
+
+    @Test
+    fun `resendLastMessage should emit zero states when conversation is null`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+        //When
+        viewModel.resendLastMessage(conversation = null)
+
+        //Then
+        viewModel.chatState.test {
+            val state = awaitItem()
+            assertEquals(expected = ChatState(isLoading = true), actual = state)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
+    }
+
+    @Test
+    fun `sendLastMessage should emit one state when sendConversation failure`() = runTest {
+        //Given
+        viewModel = PickerViewModel(getPictureDescription, sendConversation)
+        //When
+        viewModel.resendLastMessage(conversation = Conversation(messages = listOf(), filename = "filename.jpg"))
+
+        //Then
+        viewModel.chatState.test {
+            val state2 = awaitItem()
+            assertEquals(expected = ChatState(isLoading = false, isError = true,picture = null, conversation = Conversation(messages = listOf(), filename = "filename.jpg")), actual = state2)
+        }
+
+        verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
+    }
 
     //region Emit functions
     @Test
