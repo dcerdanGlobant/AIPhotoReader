@@ -1,6 +1,5 @@
 package com.kmpai.photoreader.feature.picker.ui.screens.home
 
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
@@ -29,7 +28,6 @@ class PickerViewModel(
     val chatState: StateFlow<ChatState> get() = _chatState.asStateFlow()
 
     private val imageUri = ImageUriProviderSingleton.provider.imageUrl
-    private var picture: ImageBitmap? = null
     private var contentDescription: String = ""
 
     init {
@@ -43,7 +41,6 @@ class PickerViewModel(
     }
 
     fun getPictureData(requestedPicture: RequestedPicture) {
-        picture = requestedPicture.bitmap
         viewModelScope.launch {
             _homeState.emit(
                 PickerHomeState.PickedPicture(
@@ -80,8 +77,8 @@ class PickerViewModel(
         }
     }
 
-    fun sendAnotherMessage(message: String) {
-        chatState.value.conversation?.let { oldConversation ->
+    fun sendAnotherMessage(conversation: Conversation?, message: String) {
+        conversation?.let { oldConversation ->
             val messages = mutableListOf<Message>()
             messages.addAll(oldConversation.messages)
             messages.add(Message(Role.USER, message))
@@ -90,12 +87,12 @@ class PickerViewModel(
         }
     }
 
-    fun resendLastMessage() {
-        chatState.value.conversation?.let { oldConversation ->
+    fun resendLastMessage(conversation: Conversation?) {
+        conversation?.let { oldConversation ->
             val messages = mutableListOf<Message>()
             messages.addAll(oldConversation.messages)
-            val conversation = Conversation(messages, oldConversation.filename)
-            sendConversation(conversation)
+            val newConversation = Conversation(messages, oldConversation.filename)
+            sendConversation(newConversation)
         }
     }
 
