@@ -16,11 +16,7 @@ final class ShareViewModel: ObservableObject {
     
     @Published var image = UIImage()
     @Published var description: String?
-    
-    private lazy var useCase: GetPictureDescription = {
-        UseCasesProvider().getPictureDescriptionUseCase()
-    }()
-    
+        
     init(with info: ShareViewInfo) {
         self.info = info
     }
@@ -63,13 +59,28 @@ private extension ShareViewModel {
             description = "No image"
             return
         }
-        useCase.invoke(image: image, extension: "jpeg") { [weak self] result, error in
-            guard let string = result as? String else {
-                self?.description = "No data"
-                return
-            }
-            self?.description = string
-        }
+                
+        GetPictureDescriptionWrapper.companion.getPictureDescription(image: image, extension: "jpeg", callback: { result in
+                    print("Resultado recibido en Swift: \(result)")
+
+                    switch result {
+                    case let success as CommonResultSuccess<Conversation>:
+                        // Maneja el resultado exitoso
+                        let conversation = success.data
+                        if let firstMessage = conversation?.messages.first {
+                            self.description = firstMessage.content
+                        } else {
+                            self.description = "No messages found"
+                        }
+
+                    case let failure as CommonResult<CommonResultFailure>:
+                        // Maneja el error
+                        self.description = "Error: \(failure)"
+                        
+                    default:
+                        self.description = "Unknown result"
+                    }
+                })
     }
     
     func convertUIImageToByteArray(image: UIImage) -> KotlinByteArray? {
@@ -85,5 +96,5 @@ private extension ShareViewModel {
         }
         
         return kotlinByteArray
-    }    
+    }
 }
