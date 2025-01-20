@@ -24,24 +24,26 @@ class PickerAPIDatasourceImpl(
                 val imageName = "${Uuid.random()}.$extension"
                 val serverImageName = restApi.uploadImage(imageByteArray, imageName, "image/$extension")
                 val conversation = Conversation(emptyList(), serverImageName)
-                return@flow emit(sended(conversation))
+                return@flow emit(send(conversation))
             } catch (e: Exception) {
                 return@flow emit(CommonResult.Failure(e))
             }
         }
     }
 
-    override suspend fun sendConversation(conversation: Conversation): Result<Conversation> {
-        return try {
-            send(conversation)
-        } catch (e: Exception) {
-            Result.failure(e)
+    override suspend fun sendConversation(conversation: Conversation): Flow<CommonResult<Conversation>> {
+        return flow {
+            try {
+                return@flow emit(send(conversation))
+            } catch (e: Exception) {
+                return@flow emit(CommonResult.Failure(e))
+            }
         }
     }
 
-    private suspend fun send(conversation: Conversation): Result<Conversation> {
+    private suspend fun send(conversation: Conversation): CommonResult<Conversation> {
         val response = restApi.sendMessagesToAI(conversation.toAPIMessages())
-        return Result.success(conversation.appendConversation(response))
+        return CommonResult.Success(conversation.appendConversation(response))
     }
 
     private suspend fun sended(conversation: Conversation): CommonResult<Conversation> {

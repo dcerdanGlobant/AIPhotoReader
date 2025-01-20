@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface PickerDatasource {
 
     suspend fun sendImageAndStartConversation(extension: String, imageByteArray: ByteArray): Flow<CommonResult<Conversation>>
-    suspend fun sendConversation(conversation: Conversation): Result<Conversation>
+    suspend fun sendConversation(conversation: Conversation): Flow<CommonResult<Conversation>>
 }

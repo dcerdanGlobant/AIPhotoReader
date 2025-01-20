@@ -125,23 +125,29 @@ class PickerViewModel(
                     conversation = newConversation
                 )
             )
-            sendConversation.invoke(conversation = newConversation).onSuccess { conversationFromApi ->
-                _chatState.emit(
-                    ChatState(
-                        isLoading = false,
-                        picture = chatState.value.picture,
-                        conversation = conversationFromApi
-                    )
-                )
-            }.onFailure {
-                _chatState.emit(
-                    ChatState(
-                        isLoading = false,
-                        isError = true,
-                        picture = chatState.value.picture,
-                        conversation = newConversation
-                    )
-                )
+            sendConversation.invoke(conversation = newConversation).collect { result ->
+                when(result) {
+                    is CommonResult.Success -> {
+                        _chatState.emit(
+                            ChatState(
+                                isLoading = false,
+                                picture = chatState.value.picture,
+                                conversation = result.data
+                            )
+                        )
+                    }
+
+                    is CommonResult.Failure -> {
+                        _chatState.emit(
+                            ChatState(
+                                isLoading = false,
+                                isError = true,
+                                picture = chatState.value.picture,
+                                conversation = newConversation
+                            )
+                        )
+                    }
+                }
             }
         }
 

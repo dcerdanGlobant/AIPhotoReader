@@ -18,7 +18,7 @@ class PickerRepositoryImpl(private val datasource: PickerDatasource) : PickerRep
         return datasource.sendImageAndStartConversation(extension, imageByteArray)
     }
 
-    override suspend fun sendConversation(conversation: Conversation): Result<Conversation> {
+    override suspend fun sendConversation(conversation: Conversation): Flow<CommonResult<Conversation>> {
         return datasource.sendConversation(conversation)
     }
 }
