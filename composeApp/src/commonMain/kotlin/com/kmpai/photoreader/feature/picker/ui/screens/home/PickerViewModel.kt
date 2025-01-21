@@ -3,7 +3,9 @@ package com.kmpai.photoreader.feature.picker.ui.screens.home
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
+import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
 import com.kmpai.photoreader.feature.picker.domain.model.Message
 import com.kmpai.photoreader.feature.picker.domain.model.RequestedPicture
@@ -28,6 +30,9 @@ class PickerViewModel(
         MutableStateFlow(ChatState())
     val chatState: StateFlow<ChatState> get() = _chatState.asStateFlow()
 
+    private val _conversationResult = MutableStateFlow<CommonResult<Conversation>>(CommonResult.Failure(Exception("No data")))
+    val conversationResult: StateFlow<CommonResult<Conversation>> = _conversationResult
+
     private val imageUri = ImageUriProviderSingleton.provider.imageUrl
     private var picture: ImageBitmap? = null
     private var contentDescription: String = ""
@@ -51,32 +56,44 @@ class PickerViewModel(
                     picture = requestedPicture.bitmap, ""
                 )
             )
-            getPictureDescription.invoke(requestedPicture.byteArray, requestedPicture.extension)
-                .onSuccess {
-                    contentDescription = it.messages[0].content
-                    _homeState.emit(
-                        PickerHomeState.PickedPicture(
-                            isLoading = false,
-                            picture = requestedPicture.bitmap,
-                            description = it.messages[0].content
-                        )
-                    )
-                    _chatState.emit(
-                        ChatState(
-                            isLoading = false,
-                            picture = requestedPicture.bitmap,
-                            conversation = it
-                        )
-                    )
+
+            viewModelScope.launch {
+                getPictureDescription(requestedPicture.byteArray, requestedPicture.extension).collect { result ->
+                    when(result) {
+                        is CommonResult.Failure -> {
+                            _homeState.emit(
+                                PickerHomeState.PickedPicture(
+                                    isLoading = false,
+                                    picture = requestedPicture.bitmap, "No data"
+                                )
+                            )
+                        }
+                        is CommonResult.Success -> {
+
+                            val firstMessage = result.data.messages.firstOrNull()?.content
+
+                            if (firstMessage != null) {
+                                contentDescription = firstMessage
+                            }
+                            _homeState.emit(
+                                PickerHomeState.PickedPicture(
+                                    isLoading = false,
+                                    picture = requestedPicture.bitmap,
+                                    description = firstMessage
+                                )
+                            )
+                            _chatState.emit(
+                                ChatState(
+                                    isLoading = false,
+                                    picture = requestedPicture.bitmap,
+                                    conversation = result.data
+                                )
+                            )
+                        }
+                    }
+
                 }
-                .onFailure {
-                    _homeState.emit(
-                        PickerHomeState.PickedPicture(
-                            isLoading = false,
-                            picture = requestedPicture.bitmap, "No data"
-                        )
-                    )
-                }
+            }
         }
     }
 
@@ -108,23 +125,29 @@ class PickerViewModel(
                     conversation = newConversation
                 )
             )
-            sendConversation.invoke(conversation = newConversation).onSuccess { conversationFromApi ->
-                _chatState.emit(
-                    ChatState(
-                        isLoading = false,
-                        picture = chatState.value.picture,
-                        conversation = conversationFromApi
-                    )
-                )
-            }.onFailure {
-                _chatState.emit(
-                    ChatState(
-                        isLoading = false,
-                        isError = true,
-                        picture = chatState.value.picture,
-                        conversation = newConversation
-                    )
-                )
+            sendConversation.invoke(conversation = newConversation).collect { result ->
+                when(result) {
+                    is CommonResult.Success -> {
+                        _chatState.emit(
+                            ChatState(
+                                isLoading = false,
+                                picture = chatState.value.picture,
+                                conversation = result.data
+                            )
+                        )
+                    }
+
+                    is CommonResult.Failure -> {
+                        _chatState.emit(
+                            ChatState(
+                                isLoading = false,
+                                isError = true,
+                                picture = chatState.value.picture,
+                                conversation = newConversation
+                            )
+                        )
+                    }
+                }
             }
         }
 
