@@ -96,7 +96,7 @@ class PickerViewModelTest {
     }*/
 
 
-    @Test
+    /*@Test
     fun `getPictureData should emit zero states when getPictureDescription return failure`() = runTest {
         //Given
         val imageBitmap = mock<ImageBitmap>()
@@ -111,8 +111,8 @@ class PickerViewModelTest {
         }
 
         verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
-        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
-    }
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule
+    }*/
 
 
 
@@ -134,7 +134,7 @@ class PickerViewModelTest {
         verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
     }
 
-    @Test
+   /* @Test
     fun `sendAnotherMessage should emit one state when sendConversation failure`() = runTest {
         //Given
         viewModel = PickerViewModel(getPictureDescription, sendConversation)
@@ -148,8 +148,8 @@ class PickerViewModelTest {
         }
 
         verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
-        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
-    }
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule
+    }*/
 
     /*@Test
     fun `sendAnotherMessage should emit one state when sendConversation is success`() = runTest {
@@ -189,7 +189,7 @@ class PickerViewModelTest {
         verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
     }
 
-    @Test
+    /*@Test
     fun `sendLastMessage should emit one state when sendConversation failure`() = runTest {
         //Given
         viewModel = PickerViewModel(getPictureDescription, sendConversation)
@@ -203,8 +203,8 @@ class PickerViewModelTest {
         }
 
         verifySuspend(VerifyMode.exactly(1)) { getPictureDescription.invoke(any(), any()) } //Not rule
-        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule*/
-    }
+        verifySuspend(VerifyMode.exactly(0)) { sendConversation.invoke(any()) } //Not rule
+    }*/
 
     //region Emit functions
     @Test

@@ -1,7 +1,9 @@
 package com.kmpai.photoreader.feature.picker.data.repository
 
 
+import app.cash.turbine.test
 import com.kmpai.photoreader.feature.picker.data.datasource.PickerDatasource
+import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -9,6 +11,8 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.atMost
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,14 +24,17 @@ class PickerRepositoryImplTest {
     fun `sendImageAndStartConversation should return successful result with conversation`() = runBlocking {
         val datasource = mock<PickerDatasource>()
         val repository = PickerRepositoryImpl(datasource)
-        val resultConversation = Result.success(Conversation(messages = emptyList(),""))
+        val resultConversation = CommonResult.Success(Conversation(messages = emptyList(),""))
 
-        everySuspend { datasource.sendImageAndStartConversation(any(), any()) } returns resultConversation
+        everySuspend { datasource.sendImageAndStartConversation(any(), any()) } returns flowOf(resultConversation)
 
-        val result = repository.sendImageAndStartConversation(extension = "jpg", imageByteArray = ByteArray(1))
+        val flowResult = repository.sendImageAndStartConversation(extension = "jpg", imageByteArray = ByteArray(1))
 
-        assertTrue(result.isSuccess)
-        assertEquals(resultConversation, result)
+        flowResult.test {
+            val value = awaitItem()
+            assertEquals(resultConversation, value)
+            awaitComplete()
+        }
         verifySuspend (atMost(1)) { //Call expected
             datasource.sendImageAndStartConversation(any(), any())
         }
@@ -37,13 +44,18 @@ class PickerRepositoryImplTest {
     fun `sendImageAndStartConversation should return failure result when datasource fails`() = runBlocking {
         val datasource = mock<PickerDatasource>()
         val repository = PickerRepositoryImpl(datasource)
+        val conversation = CommonResult.Failure(Exception("Error fetching description"))
 
-        everySuspend { datasource.sendImageAndStartConversation(any(), any()) } returns Result.failure(Exception("Error fetching description"))
+        everySuspend { datasource.sendImageAndStartConversation(any(), any()) } returns flowOf(CommonResult.Failure(Exception("Error fetching description")))
 
-        val result = repository.sendImageAndStartConversation(extension = "jpg", imageByteArray = ByteArray(1))
+        val flowResult = repository.sendImageAndStartConversation(extension = "jpg", imageByteArray = ByteArray(1))
 
-        assertTrue(result.isFailure)
-        assertEquals("Error fetching description", result.exceptionOrNull()?.message)
+        flowResult.test {
+            val value = awaitItem()
+            assertTrue(value is CommonResult.Failure)
+            assertEquals("Error fetching description", value.exception.message)
+            awaitComplete()
+        }
         verifySuspend(atMost(1)) { //Call expected
             datasource.sendImageAndStartConversation(any(), any())
         }
@@ -53,14 +65,18 @@ class PickerRepositoryImplTest {
     fun `sendConversation should return successful result with conversation`() = runBlocking {
         val datasource = mock<PickerDatasource>()
         val repository = PickerRepositoryImpl(datasource)
-        val resultConversation = Result.success(Conversation(messages = emptyList(),""))
+        val resultConversation = CommonResult.Success(Conversation(messages = emptyList(),""))
 
-        everySuspend { datasource.sendConversation(any()) } returns resultConversation
+        everySuspend { datasource.sendConversation(any()) } returns flowOf(resultConversation)
 
-        val result = repository.sendConversation(Conversation(messages = emptyList(),""))
+        val flowResult = repository.sendConversation(Conversation(messages = emptyList(),""))
+        flowResult.test {
+            val value = awaitItem()
+            assertTrue(value is CommonResult.Success)
+            assertEquals(resultConversation, value)
+            awaitComplete()
+        }
 
-        assertTrue(result.isSuccess)
-        assertEquals(resultConversation, result)
         verifySuspend (atMost(1)) { //Call expected
             datasource.sendConversation(any())
         }

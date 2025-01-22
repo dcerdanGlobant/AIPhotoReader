@@ -1,7 +1,9 @@
 package com.kmpai.photoreader.feature.picker.data.datasource
 
+import app.cash.turbine.test
 import com.kmpai.photoreader.feature.picker.data.rest.RestApiInterface
 import com.kmpai.photoreader.feature.picker.data.rest.model.ApiResponseBuilder
+import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
 import com.kmpai.photoreader.feature.picker.domain.model.Message
 import com.kmpai.photoreader.feature.picker.domain.model.Role
@@ -25,16 +27,20 @@ class PickerAPIDatasourceImplTest {
         everySuspend { restApi.uploadImage(image = any(), filename = any(), contentType = any()) } returns "uploaded_image.jpg"
         everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
-        val result = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
-        assertTrue(result.isSuccess)
-        assertEquals(expected =
-            Result.success(
+        val flowResult = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
+        flowResult.test {
+            val value = awaitItem()
+            assertEquals(expected =
+            CommonResult.Success(
                 Conversation(
                     messages = listOf(Message(role = Role.ASSISTANT, content = "ContentBuilder")),
                     filename = "uploaded_image.jpg"
                 )
-            ), actual = result
-        )
+            ), actual = value
+            )
+            awaitComplete()
+        }
+
 
         verifySuspend(atMost(1)) { //Call expected
             restApi.uploadImage(any(), any(),any())
@@ -48,8 +54,12 @@ class PickerAPIDatasourceImplTest {
         val datasource = PickerAPIDatasourceImpl(restApi)
         // NOT MOCKED and go to Failure everySuspend { restApi.uploadImage(image = any(), filename = any(), contentType = any()) } returns "uploaded_image.jpg"
 
-        val result = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
-        assertTrue(result.isFailure)
+        val flowResult = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
+        flowResult.test {
+            val value = awaitItem()
+            assertTrue(value is CommonResult.Failure)
+            awaitComplete()
+        }
 
         verifySuspend(atMost(1)) { //Call expected
             restApi.uploadImage(any(), any(),any())
@@ -62,16 +72,26 @@ class PickerAPIDatasourceImplTest {
         val datasource = PickerAPIDatasourceImpl(restApi)
         everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
-        val result = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
-        assertTrue(result.isSuccess)
-        assertEquals(expected =
-        Result.success(
-            Conversation(
-                messages = listOf(Message(role = Role.ASSISTANT, content = "ContentBuilder")), //Because ApiResponseBuilder().build()
-                filename = "uploaded_image.jpg"
+        val flowResult = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
+
+        flowResult.test {
+            val value = awaitItem()
+            assertEquals(
+                expected =
+                CommonResult.Success(
+                    Conversation(
+                        messages = listOf(
+                            Message(
+                                role = Role.ASSISTANT,
+                                content = "ContentBuilder"
+                            )
+                        ), //Because ApiResponseBuilder().build()
+                        filename = "uploaded_image.jpg"
+                    )
+                ), actual = value
             )
-        ), actual = result
-        )
+            awaitComplete()
+        }
 
         verifySuspend(atMost(1)) { //Call expected
             restApi.sendMessagesToAI(any())
@@ -84,8 +104,12 @@ class PickerAPIDatasourceImplTest {
         val datasource = PickerAPIDatasourceImpl(restApi)
         //NOT MOCKED and go to Failure everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
-        val result = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
-        assertTrue(result.isFailure)
+        val flowResult = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
+        flowResult.test {
+            val value = awaitItem()
+            assertTrue(value is CommonResult.Failure)
+            awaitComplete()
+        }
 
         verifySuspend(atMost(1)) { //Call expected
             restApi.sendMessagesToAI(any())
