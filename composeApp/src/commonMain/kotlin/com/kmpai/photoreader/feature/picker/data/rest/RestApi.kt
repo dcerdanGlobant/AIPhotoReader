@@ -20,8 +20,8 @@ import io.ktor.http.contentType
 class RestApi(private val client: HttpClient) {
 
     companion object {
-        private const val ORGANIZATION = "ae3a4928-505c-40c7-b3bc-c758a217d59a"
-        private const val PROJECT_ID = "36ab643f-42bb-4801-b5a6-4eeb938c376d"
+        private const val ORGANIZATION = "2bfd9c9e-0432-4f37-bdeb-9ee2da4bbe57"
+        private const val PROJECT_ID = "b8371670-3de8-443c-b5f3-96ea17abdcc6"
         const val ASSISTANT_CHAT_URL = "https://api.saia.ai/chat"
         const val FILE_UPLOAD_URL = "https://api.saia.ai/v1/files"
         private const val ORGANIZATION_HEADER = "organizationId"
@@ -30,7 +30,7 @@ class RestApi(private val client: HttpClient) {
         private const val ACCEPT_HEADER = "Accept"
         private const val ACCEPT_HEADER_VALUE = "application/json"
 
-        private const val ASSISTANT = "saia:assistant:ImageAssistant"
+        private const val ASSISTANT = "saia:assistant:AiPhotoReaderAssistant"
         private const val REVISION = 1L
         private const val REVISION_NAME = "1"
     }
