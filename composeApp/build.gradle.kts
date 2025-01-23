@@ -7,16 +7,23 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.mokkery)
+}
+
+repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
 }
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,9 +34,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -89,6 +96,9 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.junit)
+            implementation(libs.turbine)
         }
 
         iosMain.dependencies {
@@ -127,8 +137,24 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                // exclusion rules - classes to exclude from report
+                classes(
+                    "com.kmpai.photoreader.core.*",
+                    "com.kmpai.photoreader.feature.permission.*",
+                    "core.ui.*",
+                    "aiphotoreader.composeapp.generated.*",
+                    "com.kmpai.photoreader.di.*")
+            }
+        }
     }
 }
 

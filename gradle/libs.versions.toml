@@ -13,8 +13,10 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.0"
 junit = "4.13.2"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
+
 dateTimeVersion = "0.6.0"
+kover = "0.9.0"
 
 #permissions
 accompanist-permissions = "0.32.0"
@@ -39,6 +41,10 @@ ktor = "3.0.1"
 
 ## COIL
 coil3 = "3.0.3"
+
+## TEST
+mokkery = "2.6.1"
+turbine = "1.2.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -97,6 +103,9 @@ coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil3" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 
+## TESTS
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -104,3 +113,5 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-mu
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kover = {id = 'org.jetbrains.kotlinx.kover', version.ref = "kover"}
+mokkery = { id = "dev.mokkery", version.ref = "mokkery"}

@@ -17,7 +17,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 
-class RestApi(private val client: HttpClient) {
+class RestApi(private val client: HttpClient): RestApiInterface {
 
     companion object {
         private const val ORGANIZATION = "2bfd9c9e-0432-4f37-bdeb-9ee2da4bbe57"
@@ -38,7 +38,7 @@ class RestApi(private val client: HttpClient) {
     /**
      * The filename should contain the name of the file with the extension
      */
-    suspend fun uploadImage(image: ByteArray, filename: String, contentType: String): String {
+    override suspend fun uploadImage(image: ByteArray, filename: String, contentType: String): String {
         val apiKey = SecretsUtils.getGlobantApiKey()
 
         val shortFilename = filename.split(".")[0]
@@ -75,7 +75,7 @@ class RestApi(private val client: HttpClient) {
         throw Exception("ImageUploadError: status: ${response.status}")
     }
 
-    suspend fun sendMessagesToAI(messages: List<APIMessage>): APIResponse {
+    override suspend fun sendMessagesToAI(messages: List<APIMessage>): APIResponse {
 
         val apiKey = SecretsUtils.getGlobantApiKey()
 

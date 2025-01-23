@@ -56,9 +56,9 @@ fun ChatScreen(
 
     val chatState by viewModel.chatState.collectAsState()
     ChatContent(chatState, onSendMessage = {
-        viewModel.sendAnotherMessage(it)
+        viewModel.sendAnotherMessage(chatState.conversation,it)
     }, onResendMessage = {
-        viewModel.resendLastMessage()
+        viewModel.resendLastMessage(chatState.conversation)
     })
 }
 
