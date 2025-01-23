@@ -6,7 +6,7 @@ name: New Build and test
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   #push:
-      #branches: [ "main, dev" ] # You can remove for all branches or add feature/* for example
+  branches: [ "dev" ] # You can remove for all branches or add feature/* for example
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
