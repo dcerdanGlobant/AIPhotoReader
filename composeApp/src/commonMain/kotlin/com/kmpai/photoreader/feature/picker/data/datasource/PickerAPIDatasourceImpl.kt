@@ -1,8 +1,9 @@
 package com.kmpai.photoreader.feature.picker.data.datasource
 
+import com.kmpai.photoreader.feature.picker.data.language.LanguageHelper
 import com.kmpai.photoreader.feature.picker.data.rest.RestApiInterface
-import com.kmpai.photoreader.feature.picker.data.rest.mappers.toAPIMessages
 import com.kmpai.photoreader.feature.picker.data.rest.mappers.appendConversation
+import com.kmpai.photoreader.feature.picker.data.rest.mappers.toAPIMessages
 import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ import kotlin.uuid.Uuid
 
 class PickerAPIDatasourceImpl(
     private val restApi: RestApiInterface,
+    private val languageHelper: LanguageHelper,
 ) : PickerDatasource {
 
     @OptIn(ExperimentalUuidApi::class)
@@ -42,12 +44,7 @@ class PickerAPIDatasourceImpl(
     }
 
     private suspend fun send(conversation: Conversation): CommonResult<Conversation> {
-        val response = restApi.sendMessagesToAI(conversation.toAPIMessages())
-        return CommonResult.Success(conversation.appendConversation(response))
-    }
-
-    private suspend fun sended(conversation: Conversation): CommonResult<Conversation> {
-        val response = restApi.sendMessagesToAI(conversation.toAPIMessages())
+        val response = restApi.sendMessagesToAI(conversation.toAPIMessages(languageHelper.getLanguageCode()))
         return CommonResult.Success(conversation.appendConversation(response))
     }
 }

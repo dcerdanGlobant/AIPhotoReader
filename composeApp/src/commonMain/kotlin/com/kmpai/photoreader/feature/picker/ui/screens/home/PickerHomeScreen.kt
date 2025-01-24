@@ -10,6 +10,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.intl.Locale
 import com.kmpai.photoreader.feature.permission.AlertMessageDialog
 import com.kmpai.photoreader.feature.permission.ImageSourceOptionDialog
 import com.kmpai.photoreader.feature.permission.PermissionCallback
@@ -144,6 +145,8 @@ private fun useImage(
     viewModel: PickerViewModel
 ) {
     coroutineScope.launch {
+        val languageCode = Locale.current.language
+        println("Language code: $languageCode")
         withContext(Dispatchers.Default) {
             val byteArray = image?.toByteArray()
             val bitmap = image?.toImageBitmap()
