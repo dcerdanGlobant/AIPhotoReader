@@ -6,21 +6,6 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getString
 
-object SecretsUtils {
-    private val apiKey: String by lazy {
-        runBlocking {
-            loadGlobantApiKey() ?: throw Exception("globant_api_key resource not found")
-        }
-    }
-
-    @OptIn(ExperimentalResourceApi::class)
-    private suspend fun loadGlobantApiKey(): String? {
-        return try {
-            Res.allStringResources["globant_api_key"]?.let { getString(it) }
-        } catch (e: Exception) {
-            null // Resource does not exist
-        }
-    }
-
-    fun getGlobantApiKey(): String = apiKey
+expect class ApiKeyLoader() {
+    suspend fun getApiKey(): String?
 }

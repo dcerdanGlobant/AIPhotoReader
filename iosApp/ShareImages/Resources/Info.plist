@@ -22,5 +22,8 @@
                     </dict>
                 </dict>
         </dict>
+        
+        <key>CFBundleIdentifier</key>
+        <string>com.kmpai.photoreader.AiPhotoReader.SharedImages</string>
     </dict>
 </plist>
