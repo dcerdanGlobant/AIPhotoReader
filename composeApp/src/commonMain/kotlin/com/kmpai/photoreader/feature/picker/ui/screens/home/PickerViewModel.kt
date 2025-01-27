@@ -12,6 +12,8 @@ import com.kmpai.photoreader.feature.picker.domain.model.Role
 import com.kmpai.photoreader.feature.picker.domain.usecase.GetPictureDescription
 import com.kmpai.photoreader.feature.picker.domain.usecase.SendConversation
 import com.kmpai.photoreader.feature.picker.ui.screens.chat.ChatState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
