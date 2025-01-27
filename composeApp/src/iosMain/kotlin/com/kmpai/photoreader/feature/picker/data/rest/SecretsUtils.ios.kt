@@ -11,7 +11,6 @@ import platform.Foundation.dataWithContentsOfURL
 actual class ApiKeyLoader {
     actual suspend fun getApiKey(): String? {
         return try {
-            // Acceder al archivo XML desde el bundle de la Share Extension en iOS
             val bundle = NSBundle.bundleWithIdentifier( "com.kmpai.photoreader.AiPhotoReader.SharedImages")  // Asegúrate de usar el identificador correcto
             val fileURL = bundle?.URLForResource("secrets", "xml")
 
