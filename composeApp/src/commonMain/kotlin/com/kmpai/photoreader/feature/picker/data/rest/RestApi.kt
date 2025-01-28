@@ -39,7 +39,7 @@ class RestApi(private val client: HttpClient): RestApiInterface {
      * The filename should contain the name of the file with the extension
      */
     override suspend fun uploadImage(image: ByteArray, filename: String, contentType: String): String {
-        val apiKey = SecretsUtils.getGlobantApiKey()
+        val apiKey = ApiKeyLoader().getApiKey()
 
         val shortFilename = filename.split(".")[0]
 
@@ -77,7 +77,7 @@ class RestApi(private val client: HttpClient): RestApiInterface {
 
     override suspend fun sendMessagesToAI(messages: List<APIMessage>): APIResponse {
 
-        val apiKey = SecretsUtils.getGlobantApiKey()
+        val apiKey = ApiKeyLoader().getApiKey()
 
         val response: HttpResponse = client.post(ASSISTANT_CHAT_URL) {
             contentType(ContentType.Application.Json)

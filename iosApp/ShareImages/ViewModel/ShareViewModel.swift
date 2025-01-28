@@ -65,7 +65,6 @@ private extension ShareViewModel {
 
                     switch result {
                     case let success as CommonResultSuccess<Conversation>:
-                        // Maneja el resultado exitoso
                         let conversation = success.data
                         if let firstMessage = conversation?.messages.first {
                             self.description = firstMessage.content
@@ -74,7 +73,6 @@ private extension ShareViewModel {
                         }
 
                     case let failure as CommonResult<CommonResultFailure>:
-                        // Maneja el error
                         self.description = "Error: \(failure)"
                         
                     default:
