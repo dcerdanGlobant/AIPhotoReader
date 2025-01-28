@@ -6,8 +6,11 @@ import com.kmpai.photoreader.feature.picker.data.rest.mappers.appendConversation
 import com.kmpai.photoreader.feature.picker.data.rest.mappers.toAPIMessages
 import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -30,7 +33,7 @@ class PickerAPIDatasourceImpl(
             } catch (e: Exception) {
                 return@flow emit(CommonResult.Failure(e))
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun sendConversation(conversation: Conversation): Flow<CommonResult<Conversation>> {
@@ -40,7 +43,7 @@ class PickerAPIDatasourceImpl(
             } catch (e: Exception) {
                 return@flow emit(CommonResult.Failure(e))
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     private suspend fun send(conversation: Conversation): CommonResult<Conversation> {
