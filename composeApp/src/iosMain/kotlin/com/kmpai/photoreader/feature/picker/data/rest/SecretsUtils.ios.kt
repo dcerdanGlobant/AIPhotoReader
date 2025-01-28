@@ -11,7 +11,7 @@ import platform.Foundation.dataWithContentsOfURL
 actual class ApiKeyLoader {
     actual suspend fun getApiKey(): String? {
         return try {
-            val bundle = NSBundle.bundleWithIdentifier( "com.kmpai.photoreader.AiPhotoReader.SharedImages")  // Asegúrate de usar el identificador correcto
+            val bundle = NSBundle.bundleWithIdentifier( "com.kmpai.photoreader.AiPhotoReader.SharedImages")
             val fileURL = bundle?.URLForResource("secrets", "xml")
 
             println("Obteniendo")
