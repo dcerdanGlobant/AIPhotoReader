@@ -2,7 +2,6 @@ package com.kmpai.photoreader.feature.picker.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
 import com.kmpai.photoreader.core.ui.utils.ImageUriProviderSingleton
 import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
@@ -28,9 +27,6 @@ class PickerViewModel(
     private val _chatState: MutableStateFlow<ChatState> =
         MutableStateFlow(ChatState())
     val chatState: StateFlow<ChatState> get() = _chatState.asStateFlow()
-
-    private val _conversationResult = MutableStateFlow<CommonResult<Conversation>>(CommonResult.Failure(Exception("No data")))
-    val conversationResult: StateFlow<CommonResult<Conversation>> = _conversationResult
 
     private val imageUri = ImageUriProviderSingleton.provider.imageUrl
     private var contentDescription: String = ""

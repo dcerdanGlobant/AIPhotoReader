@@ -2,6 +2,7 @@ package com.kmpai.photoreader.feature.picker.data.datasource
 
 import app.cash.turbine.test
 import com.kmpai.photoreader.feature.picker.data.rest.RestApiInterface
+import com.kmpai.photoreader.feature.picker.data.language.LanguageHelper
 import com.kmpai.photoreader.feature.picker.data.rest.model.ApiResponseBuilder
 import com.kmpai.photoreader.feature.picker.domain.model.CommonResult
 import com.kmpai.photoreader.feature.picker.domain.model.Conversation
@@ -13,6 +14,7 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode.Companion.atMost
 import dev.mokkery.verifySuspend
+import dev.mokkery.every
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,7 +25,9 @@ class PickerAPIDatasourceImplTest {
     @Test
     fun `sendImageAndStartConversation should successfully get a conversation`() = runBlocking {
         val restApi = mock<RestApiInterface>()
-        val datasource = PickerAPIDatasourceImpl(restApi)
+        val languageHelper = mock<LanguageHelper>()
+        val datasource = PickerAPIDatasourceImpl(restApi, languageHelper)
+        every { languageHelper.getLanguageCode() } returns "en"
         everySuspend { restApi.uploadImage(image = any(), filename = any(), contentType = any()) } returns "uploaded_image.jpg"
         everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
@@ -51,7 +55,9 @@ class PickerAPIDatasourceImplTest {
     @Test
     fun `sendImageAndStartConversation should return failure when uploadImage fails`() = runBlocking {
         val restApi = mock<RestApiInterface>()
-        val datasource = PickerAPIDatasourceImpl(restApi)
+        val languageHelper = mock<LanguageHelper>()
+        every { languageHelper.getLanguageCode() } returns "en"
+        val datasource = PickerAPIDatasourceImpl(restApi, languageHelper)
         // NOT MOCKED and go to Failure everySuspend { restApi.uploadImage(image = any(), filename = any(), contentType = any()) } returns "uploaded_image.jpg"
 
         val flowResult = datasource.sendImageAndStartConversation("jpg", ByteArray(1))
@@ -69,7 +75,9 @@ class PickerAPIDatasourceImplTest {
     @Test
     fun `sendConversation should successfully get a conversation`() = runBlocking {
         val restApi = mock<RestApiInterface>()
-        val datasource = PickerAPIDatasourceImpl(restApi)
+        val languageHelper = mock<LanguageHelper>()
+        val datasource = PickerAPIDatasourceImpl(restApi, languageHelper)
+        every { languageHelper.getLanguageCode() } returns "en"
         everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
         val flowResult = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
@@ -101,7 +109,9 @@ class PickerAPIDatasourceImplTest {
     @Test
     fun `sendConversation should return failure when call fails`() = runBlocking {
         val restApi = mock<RestApiInterface>()
-        val datasource = PickerAPIDatasourceImpl(restApi)
+        val languageHelper = mock<LanguageHelper>()
+        every { languageHelper.getLanguageCode() } returns "en"
+        val datasource = PickerAPIDatasourceImpl(restApi, languageHelper)
         //NOT MOCKED and go to Failure everySuspend { restApi.sendMessagesToAI(messages = any()) } returns ApiResponseBuilder().build()
 
         val flowResult = datasource.sendConversation(Conversation(emptyList(),"uploaded_image.jpg"))
