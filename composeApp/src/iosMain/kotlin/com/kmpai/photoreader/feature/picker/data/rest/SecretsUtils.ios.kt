@@ -14,18 +14,16 @@ actual class ApiKeyLoader {
             val bundle = NSBundle.bundleWithIdentifier( "com.kmpai.photoreader.AiPhotoReader.SharedImages")
             val fileURL = bundle?.URLForResource("secrets", "xml")
 
-            println("Obteniendo")
             if (fileURL != null) {
                 val fileData = NSData.dataWithContentsOfURL(fileURL)
                 val fileContent = NSString.create(fileData!!, NSUTF8StringEncoding).toString()
 
                 extractApiKeyFromXML(fileContent)
-                    ?: throw Exception("No se encontró globant_api_key en el archivo XML")
+                    ?: throw Exception("Api key not found")
             } else {
-                throw Exception("Url nula")
+                throw Exception("Null url")
             }
         } catch (e: Exception) {
-            println("Error al obtener la API Key: ${e.cause}")
             throw Exception("globant_api_key resource not found")
         }
     }
