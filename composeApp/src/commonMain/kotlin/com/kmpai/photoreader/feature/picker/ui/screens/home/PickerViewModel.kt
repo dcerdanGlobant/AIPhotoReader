@@ -28,9 +28,6 @@ class PickerViewModel(
         MutableStateFlow(ChatState())
     val chatState: StateFlow<ChatState> get() = _chatState.asStateFlow()
 
-    private val _conversationResult = MutableStateFlow<CommonResult<Conversation>>(CommonResult.Failure(Exception("No data")))
-    val conversationResult: StateFlow<CommonResult<Conversation>> = _conversationResult
-
     private val imageUri = ImageUriProviderSingleton.provider.imageUrl
     private var contentDescription: String = ""
 
